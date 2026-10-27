@@ -1,0 +1,2365 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>澳門金龍娛樂場 - 十二生肖星座尊貴版</title>
+<style>
+  :root {
+    --gold: #FFD700;
+    --gold-dark: #B8860B;
+    --red-bg: #5A0000;
+    --green-felt: #0B4F26;
+  }
+  * { box-sizing: border-box; user-select: none; -webkit-user-select: none; font-family: "PingFang HK", "Microsoft JhengHei", sans-serif; }
+  body, html {
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at center, #7a0000 0%, #2b0000 100%);
+    color: #fff; overflow: hidden;
+  }
+
+  /* 頂部狀態列 */
+  #topbar {
+    height: 72px; background: linear-gradient(180deg, #1a0505 0%, #3d0a0a 100%);
+    border-bottom: 4px solid var(--gold);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+  }
+  .brand { font-size: 28px; font-weight: 900; color: var(--gold); text-shadow: 2px 2px 4px #000; letter-spacing: 1px; }
+  .user-info { display: flex; align-items: center; gap: 15px; }
+  .coin-box {
+    background: #000; border: 3px solid var(--gold); border-radius: 40px;
+    padding: 5px 22px; font-size: 28px; font-weight: bold; color: var(--gold);
+    display: flex; align-items: center; gap: 8px; box-shadow: inset 0 0 10px rgba(255,215,0,0.4);
+  }
+  .top-btn {
+    background: linear-gradient(180deg, #ffd700, #c99700); color: #000;
+    border: 2px solid #fff; border-radius: 12px; padding: 8px 18px;
+    font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #7a5c00;
+  }
+  .top-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #7a5c00; }
+  .top-btn.secondary { background: linear-gradient(180deg, #eee, #bbb); box-shadow: 0 4px 0 #666; }
+
+  /* 畫面容器 */
+  .screen {
+    display: none; width: 100%; height: calc(100% - 72px);
+    padding: 12px 18px; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .screen.active { display: flex; }
+
+  /* 1. 玩家選擇畫面 */
+  .title-huge { font-size: 40px; color: var(--gold); text-shadow: 0 4px 8px #000; margin-bottom: 8px; font-weight: 900; text-align: center; }
+  .subtitle { font-size: 24px; color: #ffcccc; margin-bottom: 24px; text-align: center; }
+  .user-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; max-width: 1120px; width: 100%; }
+  .user-card {
+    background: linear-gradient(145deg, #8b0000, #450000);
+    border: 4px solid var(--gold); border-radius: 24px; padding: 22px 15px;
+    text-align: center; cursor: pointer; transition: transform 0.15s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6); position: relative;
+  }
+  .user-card:active { transform: scale(0.96); }
+  .user-avatar { font-size: 66px; margin-bottom: 8px; }
+  .user-name { font-size: 34px; font-weight: 900; color: #fff; margin-bottom: 8px; }
+  .user-coins-preview { font-size: 23px; color: var(--gold); margin-bottom: 14px; font-weight: bold; }
+  .edit-profile-btn {
+    background: rgba(0,0,0,0.55); color: #ffe082; border: 2px solid var(--gold);
+    border-radius: 16px; padding: 6px 14px; font-size: 18px; font-weight: bold;
+    cursor: pointer; display: inline-block;
+  }
+  .edit-profile-btn:hover { background: var(--gold); color: #000; }
+
+  /* 2. 遊戲大堂 */
+  .zodiac-banner {
+    background: rgba(0,0,0,0.55); border: 2px solid var(--gold); border-radius: 30px;
+    padding: 8px 28px; font-size: 23px; color: #ffe699; margin-bottom: 16px;
+    font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  }
+  .game-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1150px; width: 100%; }
+  .game-card {
+    background: linear-gradient(145deg, #8f0000, #3d0000);
+    border: 4px solid var(--gold); border-radius: 22px; padding: 20px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+    min-height: 195px;
+  }
+  .game-card.info-card { background: linear-gradient(145deg, #2a0800, #5e1400); }
+  .game-card:active { transform: scale(0.97); }
+  .game-icon { font-size: 62px; margin-bottom: 8px; }
+  .game-title { font-size: 34px; font-weight: 900; color: var(--gold); text-shadow: 2px 2px 4px #000; }
+  .game-sub { font-size: 20px; color: #ffdddd; margin-top: 6px; font-weight: bold; }
+  .badge-hot {
+    position: absolute; top: 12px; right: 12px; background: #ff0044; color: #fff;
+    padding: 4px 13px; border-radius: 20px; font-size: 17px; font-weight: bold; border: 2px solid var(--gold);
+  }
+
+  /* 共用按鈕與籌碼樣式 */
+  .chip-btn {
+    width: 74px; height: 74px; border-radius: 50%; border: 5px dashed #fff;
+    font-size: 21px; font-weight: 900; color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.6); text-shadow: 1px 1px 3px #000;
+    transition: transform 0.15s;
+  }
+  .chip-btn.selected-chip {
+    transform: scale(1.14); border: 5px solid var(--gold);
+    box-shadow: 0 0 20px var(--gold);
+  }
+  .chip-btn:active { transform: scale(0.92); }
+  .chip-100 { background: #1e6bd6; }
+  .chip-500 { background: #9b26af; }
+  .chip-1000 { background: #d62828; }
+  .chip-5000 { background: #e69100; }
+
+  .action-btn {
+    padding: 11px 24px; font-size: 26px; font-weight: 900; border-radius: 14px;
+    border: 3px solid #fff; cursor: pointer; color: #fff;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.5); text-shadow: 1px 1px 2px #000;
+  }
+  .action-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.5); }
+  .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-green { background: linear-gradient(180deg, #00cc44, #007722); }
+  .btn-red { background: linear-gradient(180deg, #e62e00, #801a00); }
+  .btn-orange { background: linear-gradient(180deg, #ff9900, #b36b00); }
+  .btn-gray { background: linear-gradient(180deg, #666, #333); }
+  .btn-purple { background: linear-gradient(180deg, #ab47bc, #6a1b9a); }
+
+  /* 撲克牌共用樣式 */
+  .playing-card {
+    width: 90px; height: 126px; background: #fff; border-radius: 11px;
+    border: 3px solid #ccc; box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 6px 9px; font-weight: 900; position: relative;
+    animation: dealCard 0.22s ease-out;
+  }
+  @keyframes dealCard { from { transform: translateY(-30px) scale(0.85); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+  .playing-card.red { color: #d00000; }
+  .playing-card.black { color: #111; }
+  .playing-card.back {
+    background: repeating-linear-gradient(45deg, #8b0000, #8b0000 10px, #ffd700 10px, #ffd700 14px);
+    border: 4px solid #fff;
+  }
+  .card-rank { font-size: 30px; line-height: 1; }
+  .card-suit-center { font-size: 44px; align-self: center; line-height: 1; margin-top: -4px; }
+  .card-suit-bot { font-size: 22px; align-self: flex-end; line-height: 1; }
+
+  /* =========================================================
+     3. 瑞獸星宿老虎機
+     ========================================================= */
+  .slot-layout {
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    width: 100%; max-width: 1180px; height: 100%;
+  }
+  .slot-header {
+    display: flex; justify-content: space-between; align-items: center; width: 100%;
+    background: rgba(0,0,0,0.7); border: 3px solid var(--gold); border-radius: 14px;
+    padding: 8px 22px;
+  }
+  .slot-status { font-size: 27px; font-weight: 900; color: #fff; text-shadow: 0 2px 4px #000; }
+  .slot-status.win-flash { color: #00ff66; animation: pulse 0.5s infinite alternate; }
+  @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.03); } }
+
+  .slot-machine-middle {
+    display: flex; align-items: center; width: 100%; flex: 1; margin: 8px 0; gap: 8px; position: relative;
+  }
+  .line-pillars {
+    display: flex; flex-direction: column; justify-content: space-around;
+    height: 100%; width: 48px; padding: 6px 0;
+  }
+  .line-pill {
+    background: #333; color: #888; border: 2px solid #666; border-radius: 8px;
+    font-size: 16px; font-weight: 900; text-align: center; padding: 3px 0;
+  }
+  .line-pill.active-line { color: #fff; border-color: var(--gold); box-shadow: 0 0 8px rgba(255,215,0,0.6); }
+
+  .reel-frame-wrap { position: relative; flex: 1; height: 100%; }
+  .reel-frame {
+    background: linear-gradient(180deg, #2b0900, #120300);
+    border: 5px solid var(--gold); border-radius: 18px;
+    padding: 10px; width: 100%; height: 100%;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+    box-shadow: inset 0 0 30px #000, 0 8px 20px rgba(0,0,0,0.8);
+  }
+  #payline-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+  .reel-col {
+    display: grid; grid-template-rows: repeat(3, 1fr); gap: 8px; height: 100%;
+    background: #fff8e7; border-radius: 10px; padding: 6px; border: 3px solid #b8860b;
+  }
+  .slot-cell {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: radial-gradient(circle, #fff 50%, #f0dfc0 100%);
+    border-radius: 8px; border: 2px solid #d4af37;
+    font-size: 38px; font-weight: 900; color: #333; position: relative;
+  }
+  .slot-cell.zodiac-cell { background: radial-gradient(circle, #fffdf0 40%, #ffe082 100%); border: 2px solid #e65100; }
+  .slot-cell span.sym-label { font-size: 19px; font-weight: 900; margin-top: -2px; color: #8b0000; }
+  .slot-cell.win-cell {
+    background: radial-gradient(circle, #ffff99 30%, #ff9900 100%);
+    border: 4px solid #ff0000; animation: winCellBounce 0.45s infinite alternate;
+    box-shadow: 0 0 18px #ffd700; z-index: 2;
+  }
+  @keyframes winCellBounce { from { transform: scale(0.95); } to { transform: scale(1.05); } }
+
+  .slot-controls {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; background: rgba(0,0,0,0.8); border: 3px solid var(--gold);
+    border-radius: 18px; padding: 10px 20px; gap: 15px;
+  }
+  .slot-selectors-col { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .selector-row { display: flex; align-items: center; gap: 8px; }
+  .bet-label { font-size: 22px; font-weight: 900; color: var(--gold); width: 150px; }
+  .opt-btn {
+    background: #2b2b2b; color: #ddd; border: 2px solid #777; border-radius: 12px;
+    padding: 6px 15px; font-size: 22px; font-weight: 900; cursor: pointer; min-width: 90px;
+  }
+  .opt-btn.active {
+    background: linear-gradient(180deg, #ffd700, #b8860b); color: #000;
+    border: 3px solid #fff; box-shadow: 0 0 12px var(--gold);
+  }
+  .spin-area { display: flex; align-items: center; gap: 15px; }
+  .total-bet-box {
+    background: #1a0000; border: 3px solid var(--gold); border-radius: 14px;
+    padding: 6px 16px; text-align: center; min-width: 160px;
+  }
+  .total-bet-title { font-size: 17px; color: #ffcccc; font-weight: bold; }
+  .total-bet-val { font-size: 30px; font-weight: 900; color: var(--gold); }
+  .spin-btn {
+    background: linear-gradient(180deg, #00e640, #00802b); color: #fff;
+    border: 4px solid var(--gold); border-radius: 50px; padding: 15px 36px;
+    font-size: 32px; font-weight: 900; cursor: pointer;
+    box-shadow: 0 6px 0 #004d1a, 0 0 25px rgba(0,255,100,0.5);
+    text-shadow: 1px 2px 3px #000; white-space: nowrap;
+  }
+  .spin-btn:disabled { background: #555; box-shadow: none; color: #999; cursor: not-allowed; }
+
+  /* =========================================================
+     4. 澳門電子 21 點
+     ========================================================= */
+  .bj-table {
+    width: 100%; max-width: 1150px; height: 100%;
+    background: radial-gradient(circle at center, #117a37 0%, #063818 100%);
+    border: 8px solid #8B4513; border-radius: 28px;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 10px 25px rgba(0,0,0,0.7);
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 14px 25px; position: relative;
+  }
+  .bj-zone { display: flex; flex-direction: column; align-items: center; min-height: 150px; }
+  .bj-zone-header {
+    display: flex; align-items: center; gap: 15px; margin-bottom: 6px;
+    background: rgba(0,0,0,0.5); padding: 5px 22px; border-radius: 30px; border: 2px solid var(--gold);
+  }
+  .bj-role-name { font-size: 25px; font-weight: bold; color: #fff; }
+  .bj-score-badge { font-size: 27px; font-weight: 900; color: var(--gold); }
+  .card-row { display: flex; gap: 12px; align-items: center; justify-content: center; min-height: 126px; }
+  .bj-middle-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .bj-center-banner {
+    text-align: center; font-size: 30px; font-weight: 900; color: var(--gold);
+    background: rgba(0,0,0,0.7); padding: 7px 26px; border-radius: 40px;
+    border: 3px solid var(--gold); text-shadow: 2px 2px 4px #000;
+  }
+  .bj-cheer-bar {
+    font-size: 22px; font-weight: bold; color: #fff;
+    background: rgba(139, 0, 0, 0.85); border: 2px solid #ffcc00;
+    padding: 4px 22px; border-radius: 20px;
+  }
+  .bj-controls {
+    display: flex; align-items: center; justify-content: center; gap: 15px;
+    background: rgba(0,0,0,0.65); padding: 10px 20px; border-radius: 20px;
+    border: 2px solid rgba(255,215,0,0.5);
+  }
+
+  /* =========================================================
+     5. 發財買大細 (澳門電子骰寶)
+     ========================================================= */
+  .sicbo-layout {
+    width: 100%; max-width: 1180px; height: 100%;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+  }
+  .sicbo-top-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(0,0,0,0.75); border: 3px solid var(--gold); border-radius: 16px;
+    padding: 8px 20px; gap: 15px;
+  }
+  .dice-cup-box {
+    display: flex; align-items: center; gap: 14px;
+    background: #2b0000; border: 3px solid var(--gold); border-radius: 14px; padding: 6px 18px;
+  }
+  .dice-cube {
+    width: 56px; height: 56px; background: #fff; color: #111; border-radius: 12px;
+    border: 3px solid #ccc; font-size: 36px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.5);
+  }
+  .dice-cube.red-pip { color: #d00000; }
+  .dice-cube.shaking { animation: shakeDice 0.15s infinite alternate; }
+  @keyframes shakeDice { from { transform: rotate(-12deg) translateY(-4px); } to { transform: rotate(12deg) translateY(4px); } }
+
+  .sicbo-board {
+    flex: 1; background: radial-gradient(circle, #0d5c2b 0%, #052e14 100%);
+    border: 5px solid var(--gold); border-radius: 20px; padding: 10px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+  }
+  .sb-row-main { display: grid; grid-template-columns: 1.3fr 1fr 1.2fr 1fr 1.3fr; gap: 8px; flex: 1.2; }
+  .sb-row-triples { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; flex: 0.9; }
+  .sb-row-totals { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; flex: 0.9; }
+  .sb-row-singles { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; flex: 0.9; }
+
+  .sb-cell {
+    background: rgba(0, 30, 10, 0.75); border: 2px solid var(--gold); border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer; position: relative; padding: 4px; transition: transform 0.1s, background 0.2s;
+  }
+  .sb-cell:active { transform: scale(0.96); }
+  .sb-cell.big-small { background: linear-gradient(145deg, #7a0000, #3d0000); border-width: 3px; }
+  .sb-cell.any-triple { background: linear-gradient(145deg, #6a1b9a, #38006b); border-width: 3px; }
+  .sb-cell.win-glow {
+    background: radial-gradient(circle, #ffee55 20%, #ff8800 100%) !important;
+    color: #000 !important; border: 4px solid #fff !important;
+    box-shadow: 0 0 25px #ffd700; z-index: 3;
+  }
+  .sb-cell.win-glow * { color: #000 !important; text-shadow: none !important; }
+  .sb-title { font-size: 28px; font-weight: 900; color: var(--gold); line-height: 1.1; }
+  .sb-sub { font-size: 16px; color: #ddd; font-weight: bold; }
+  .sb-bet-tag {
+    position: absolute; top: 4px; right: 6px; background: #ffd700; color: #000;
+    font-size: 17px; font-weight: 900; padding: 2px 8px; border-radius: 12px;
+    border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  }
+
+  /* =========================================================
+     6. 五張話事啤 (星宿擂台對決)
+     ========================================================= */
+  .stud-table {
+    width: 100%; max-width: 1180px; height: 100%;
+    background: radial-gradient(circle at center, #0e6b32 0%, #042b13 100%);
+    border: 8px solid #6b3410; border-radius: 28px;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.85);
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 12px 22px; position: relative;
+  }
+  .stud-opponents-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;
+  }
+  .stud-seat {
+    background: rgba(0,0,0,0.55); border: 3px solid var(--gold); border-radius: 18px;
+    padding: 10px 16px; display: flex; flex-direction: column; align-items: center;
+    position: relative;
+  }
+  .stud-seat.folded { opacity: 0.45; border-color: #777; }
+  .stud-seat.winner-seat {
+    border: 4px solid #00ff66; box-shadow: 0 0 25px rgba(0,255,102,0.7);
+    background: rgba(0, 80, 30, 0.75);
+  }
+  .stud-seat-header {
+    display: flex; justify-content: space-between; align-items: center; width: 100%;
+    margin-bottom: 6px;
+  }
+  .stud-player-title { font-size: 26px; font-weight: 900; color: var(--gold); }
+  .stud-speech {
+    font-size: 20px; font-weight: bold; color: #fff; background: #8b0000;
+    padding: 3px 14px; border-radius: 15px; border: 2px solid #ffcc00;
+  }
+  .stud-pot-center {
+    align-self: center; text-align: center;
+    background: rgba(0,0,0,0.75); border: 3px solid var(--gold); border-radius: 30px;
+    padding: 8px 32px; font-size: 28px; font-weight: 900; color: var(--gold);
+  }
+
+  /* =========================================================
+     7. 幸運電子輪盤
+     ========================================================= */
+  .roulette-layout {
+    width: 100%; max-width: 1180px; height: 100%;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+  }
+  .rl-top-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(0,0,0,0.75); border: 3px solid var(--gold); border-radius: 16px;
+    padding: 8px 20px; gap: 15px;
+  }
+  .rl-wheel-box { display: flex; align-items: center; gap: 15px; }
+  .rl-wheel-circle {
+    width: 78px; height: 78px; border-radius: 50%;
+    border: 6px solid var(--gold); background: conic-gradient(#d00000 0deg 30deg, #111 30deg 60deg, #d00000 60deg 90deg, #111 90deg 120deg, #009933 120deg 150deg, #d00000 150deg 180deg, #111 180deg 210deg, #d00000 210deg 240deg, #111 240deg 270deg, #d00000 270deg 300deg, #111 300deg 330deg, #d00000 330deg 360deg);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 15px rgba(255,215,0,0.6);
+  }
+  .rl-wheel-circle.spinning-wheel { animation: spinWheel 0.35s linear infinite; }
+  @keyframes spinWheel { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .rl-ball-num {
+    width: 52px; height: 52px; border-radius: 50%; background: #000;
+    border: 3px solid #fff; font-size: 28px; font-weight: 900; color: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .rl-board {
+    flex: 1; background: #084c22; border: 5px solid var(--gold); border-radius: 20px;
+    padding: 10px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+  }
+  .rl-numbers-grid {
+    display: grid; grid-template-columns: 75px repeat(12, 1fr); grid-template-rows: repeat(3, 1fr);
+    gap: 6px; flex: 1.5;
+  }
+  .rl-zero-cell {
+    grid-row: 1 / span 3; grid-column: 1;
+    background: #00882b; border: 2px solid var(--gold); border-radius: 10px;
+    font-size: 34px; font-weight: 900; color: #fff;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;
+  }
+  .rl-num-cell {
+    border: 2px solid rgba(255,215,0,0.7); border-radius: 8px;
+    font-size: 26px; font-weight: 900; color: #fff;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;
+  }
+  .rl-num-cell.rl-red { background: #c61a1a; }
+  .rl-num-cell.rl-black { background: #1a1a1a; }
+  .rl-outside-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; flex: 0.65; }
+  .rl-outside-row6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; flex: 0.75; }
+  .rl-out-cell {
+    background: rgba(0,30,12,0.85); border: 2px solid var(--gold); border-radius: 10px;
+    font-size: 25px; font-weight: 900; color: var(--gold);
+    display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;
+  }
+  .rl-out-cell.red-zone { background: #a31414; color: #fff; }
+  .rl-out-cell.black-zone { background: #181818; color: #fff; }
+
+  /* 彈出提示窗與改名視窗 (Modal) */
+  .overlay-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.84); z-index: 999; align-items: center; justify-content: center;
+  }
+  .overlay-modal.show { display: flex; }
+  .modal-box {
+    background: linear-gradient(145deg, #6b0000, #2b0000);
+    border: 6px solid var(--gold); border-radius: 28px; padding: 30px 40px;
+    max-width: 760px; width: 92%; text-align: center;
+    box-shadow: 0 0 50px rgba(255,215,0,0.5);
+  }
+  .modal-title { font-size: 38px; font-weight: 900; color: var(--gold); margin-bottom: 12px; }
+  .modal-text { font-size: 26px; line-height: 1.55; color: #fff; margin-bottom: 25px; white-space: pre-line; }
+
+  /* 生肖星座選擇器 */
+  .name-input {
+    width: 80%; max-width: 400px; font-size: 28px; font-weight: bold;
+    padding: 10px 18px; border-radius: 14px; border: 3px solid var(--gold);
+    background: #1a0000; color: #fff; text-align: center; margin-bottom: 15px;
+    user-select: text; -webkit-user-select: text;
+  }
+  .avatar-picker-grid {
+    display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px;
+    margin-bottom: 20px; max-height: 220px; overflow-y: auto; padding: 6px;
+    background: rgba(0,0,0,0.4); border-radius: 14px; border: 2px solid #886600;
+  }
+  .avatar-opt {
+    font-size: 28px; padding: 6px 4px; border-radius: 10px; cursor: pointer;
+    background: #2b0808; border: 2px solid transparent; display: flex;
+    flex-direction: column; align-items: center;
+  }
+  .avatar-opt span { font-size: 13px; color: #ffd700; font-weight: bold; margin-top: 2px; }
+  .avatar-opt.selected { background: #990000; border-color: var(--gold); box-shadow: 0 0 10px var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- 頂部狀態列 -->
+<div id="topbar">
+  <div class="brand">🎰 澳門金龍娛樂場・星宿生肖版</div>
+  <div class="user-info" id="top-user-area" style="display:none;">
+    <span id="current-user-label" style="font-size:28px; font-weight:bold; color:#ffdddd;"></span>
+    <div class="coin-box">🪙 $<span id="coin-display">0</span></div>
+    <button class="top-btn" id="btn-back-lobby" onclick="goLobby()" style="display:none;">🏠 返回大堂</button>
+    <button class="top-btn secondary" onclick="switchUser()">👤 轉換玩家</button>
+  </div>
+</div>
+
+<!-- 畫面 1：揀玩家 -->
+<div id="screen-users" class="screen active">
+  <div class="title-huge">歡迎光臨！請選擇玩家開始遊戲</div>
+  <div class="subtitle">🌟 十二生肖 × 十二星座 招財加持・自動儲存籌碼・每日派發利是 🌟</div>
+  <div class="user-grid" id="user-grid"></div>
+</div>
+
+<!-- 畫面 2：遊戲大堂 -->
+<div id="screen-lobby" class="screen">
+  <div class="zodiac-banner" id="lobby-zodiac-banner">🎉 紫微星照・十二生肖瑞獸助陣，祝你今日橫財就手！</div>
+  <div class="game-grid">
+    <div class="game-card" onclick="openGame('slots')">
+      <span class="badge-hot">自選1-20線</span>
+      <div class="game-icon">🐉</div>
+      <div class="game-title">瑞獸星宿老虎機</div>
+      <div class="game-sub">生肖・星座・免費旋轉大獎</div>
+    </div>
+    <div class="game-card" onclick="openGame('blackjack')">
+      <span class="badge-hot">經典必玩</span>
+      <div class="game-icon">🃏</div>
+      <div class="game-title">澳門電子 21 點</div>
+      <div class="game-sub">特大字牌・星宿運勢加持</div>
+    </div>
+    <div class="game-card" onclick="openGame('sicbo')">
+      <span class="badge-hot">人氣最高</span>
+      <div class="game-icon">🎲</div>
+      <div class="game-title">發財買大細</div>
+      <div class="game-sub">大細・單雙・圍骰最高150倍</div>
+    </div>
+    <div class="game-card" onclick="openGame('stud')">
+      <span class="badge-hot">高手過招</span>
+      <div class="game-icon">🂡</div>
+      <div class="game-title">五張話事啤</div>
+      <div class="game-sub">與十二生肖星宿宗師同檯對決</div>
+    </div>
+    <div class="game-card" onclick="openGame('roulette')">
+      <span class="badge-hot">幸運轉盤</span>
+      <div class="game-icon">🎡</div>
+      <div class="game-title">星象電子輪盤</div>
+      <div class="game-sub">紅黑・單雙・一鍵買星宿吉數</div>
+    </div>
+    <div class="game-card info-card" onclick="showRulesModal()">
+      <div class="game-icon">🧧</div>
+      <div class="game-title">每日派彩說明</div>
+      <div class="game-sub">如何領取每日免費籌碼？</div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================
+     畫面 3：瑞獸星宿老虎機
+     ========================================================= -->
+<div id="screen-slots" class="screen">
+  <div class="slot-layout">
+    <div class="slot-header">
+      <div id="slot-msg" class="slot-status">可自由揀「買幾多條線」同「每線注碼」，再撳轉動！</div>
+      <div id="slot-fs-badge" style="display:none; background:#ff0044; padding:6px 18px; border-radius:30px; font-size:24px; font-weight:900; border:3px solid gold;">
+        🎁 星盤免費轉：<span id="fs-count">0</span> 次
+      </div>
+    </div>
+
+    <div class="slot-machine-middle">
+      <div class="line-pillars" id="left-pillars"></div>
+      <div class="reel-frame-wrap">
+        <div class="reel-frame" id="reel-frame"></div>
+        <svg id="payline-svg"></svg>
+      </div>
+      <div class="line-pillars" id="right-pillars"></div>
+    </div>
+
+    <div class="slot-controls">
+      <div class="slot-selectors-col">
+        <div class="selector-row" id="line-count-row">
+          <span class="bet-label">📏 買幾多條線：</span>
+          <button class="opt-btn" onclick="setSlotLines(1, this)">1 線</button>
+          <button class="opt-btn" onclick="setSlotLines(5, this)">5 線</button>
+          <button class="opt-btn" onclick="setSlotLines(9, this)">9 線</button>
+          <button class="opt-btn" onclick="setSlotLines(15, this)">15 線</button>
+          <button class="opt-btn active" onclick="setSlotLines(20, this)">20 線(全買)</button>
+        </div>
+        <div class="selector-row" id="line-bet-row">
+          <span class="bet-label">🪙 每條線注碼：</span>
+          <button class="opt-btn active" onclick="setSlotLineBet(5, this)">$5</button>
+          <button class="opt-btn" onclick="setSlotLineBet(10, this)">$10</button>
+          <button class="opt-btn" onclick="setSlotLineBet(25, this)">$25</button>
+          <button class="opt-btn" onclick="setSlotLineBet(50, this)">$50</button>
+        </div>
+      </div>
+
+      <div class="spin-area">
+        <div class="total-bet-box">
+          <div class="total-bet-title" id="total-bet-desc">20線 × $5</div>
+          <div class="total-bet-val">總注 $<span id="total-bet-num">100</span></div>
+        </div>
+        <button class="spin-btn" id="btn-spin" onclick="spinSlots()">🎰 轉動發財</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================
+     畫面 4：澳門電子 21 點
+     ========================================================= -->
+<div id="screen-blackjack" class="screen">
+  <div class="bj-table">
+    <div class="bj-zone">
+      <div class="bj-zone-header">
+        <span class="bj-role-name">🎩 澳門莊家 (Dealer)</span>
+        <span class="bj-score-badge" id="bj-dealer-score">- 點</span>
+      </div>
+      <div class="card-row" id="bj-dealer-cards"></div>
+    </div>
+
+    <div class="bj-middle-wrap">
+      <div class="bj-cheer-bar" id="bj-cheer-msg">🔮 星宿財神運勢：吉星高照，落注開局旗開得勝！</div>
+      <div class="bj-center-banner" id="bj-banner">請撳下方籌碼落注！（本局注碼：$0）</div>
+    </div>
+
+    <div class="bj-zone">
+      <div class="card-row" id="bj-player-cards"></div>
+      <div class="bj-zone-header" style="margin-top:6px;">
+        <span class="bj-role-name">👑 你嘅手牌</span>
+        <span class="bj-score-badge" id="bj-player-score">- 點</span>
+      </div>
+    </div>
+
+    <div class="bj-controls" id="bj-bet-controls">
+      <button class="chip-btn chip-100" onclick="addBjBet(100)">+$100</button>
+      <button class="chip-btn chip-500" onclick="addBjBet(500)">+$500</button>
+      <button class="chip-btn chip-1000" onclick="addBjBet(1000)">+$1000</button>
+      <button class="chip-btn chip-5000" onclick="addBjBet(5000)">+$5000</button>
+      <button class="action-btn btn-gray" onclick="clearBjBet()">清除重設</button>
+      <button class="action-btn btn-orange" onclick="rebetBj()">重複上局 ($<span id="bj-last-bet-label">500</span>)</button>
+      <button class="action-btn btn-green" onclick="dealBj()">🂡 派牌開局</button>
+    </div>
+
+    <div class="bj-controls" id="bj-play-controls" style="display:none;">
+      <button class="action-btn btn-green" id="btn-bj-hit" onclick="bjHit()">➕ 要牌 (Hit)</button>
+      <button class="action-btn btn-red" id="btn-bj-stand" onclick="bjStand()">✋ 停牌 (Stand)</button>
+      <button class="action-btn btn-orange" id="btn-bj-double" onclick="bjDouble()">✖️2 雙倍下注 (Double)</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================
+     畫面 5：發財買大細 (澳門電子骰寶)
+     ========================================================= -->
+<div id="screen-sicbo" class="screen">
+  <div class="sicbo-layout">
+    <div class="sicbo-top-bar">
+      <div class="dice-cup-box">
+        <span style="font-size:24px; font-weight:900; color:var(--gold);">🎲 金龍骰盅：</span>
+        <div class="dice-cube" id="sb-die-0">⚀</div>
+        <div class="dice-cube" id="sb-die-1">⚂</div>
+        <div class="dice-cube red-pip" id="sb-die-2">🕕</div>
+      </div>
+      <div id="sb-status" style="font-size:26px; font-weight:900; color:#fff; flex:1; text-align:center;">
+        請先揀籌碼，再篤格仔落注！（圍骰通吃大細單雙）
+      </div>
+      <div id="sb-history" style="font-size:20px; color:#ffe082; font-weight:bold;">
+        上局記錄：暫無
+      </div>
+    </div>
+
+    <div class="sicbo-board" id="sicbo-board">
+      <div class="sb-row-main">
+        <div class="sb-cell big-small" data-sb="small" onclick="placeSbBet('small')">
+          <div class="sb-title" style="font-size:38px;">細 (4-10點)</div>
+          <div class="sb-sub">1 賠 1（圍骰通吃）</div>
+        </div>
+        <div class="sb-cell" data-sb="odd" onclick="placeSbBet('odd')">
+          <div class="sb-title">單</div>
+          <div class="sb-sub">1 賠 1</div>
+        </div>
+        <div class="sb-cell any-triple" data-sb="any_triple" onclick="placeSbBet('any_triple')">
+          <div class="sb-title">👑 全圍 (任何圍骰)</div>
+          <div class="sb-sub">1 賠 30（111至666皆中）</div>
+        </div>
+        <div class="sb-cell" data-sb="even" onclick="placeSbBet('even')">
+          <div class="sb-title">雙</div>
+          <div class="sb-sub">1 賠 1</div>
+        </div>
+        <div class="sb-cell big-small" data-sb="big" onclick="placeSbBet('big')">
+          <div class="sb-title" style="font-size:38px;">大 (11-17點)</div>
+          <div class="sb-sub">1 賠 1（圍骰通吃）</div>
+        </div>
+      </div>
+
+      <div class="sb-row-triples" id="sb-row-triples"></div>
+      <div class="sb-row-totals" id="sb-row-totals"></div>
+      <div class="sb-row-singles" id="sb-row-singles"></div>
+    </div>
+
+    <div class="bj-controls">
+      <span style="font-size:22px; font-weight:bold; color:var(--gold);">揀籌碼：</span>
+      <button class="chip-btn chip-100" onclick="selectTableChip(100, this)">$100</button>
+      <button class="chip-btn chip-500 selected-chip" onclick="selectTableChip(500, this)">$500</button>
+      <button class="chip-btn chip-1000" onclick="selectTableChip(1000, this)">$1000</button>
+      <button class="chip-btn chip-5000" onclick="selectTableChip(5000, this)">$5000</button>
+      <div style="font-size:24px; font-weight:900; color:var(--gold); margin:0 8px;">
+        總注：$<span id="sb-total-bet">0</span>
+      </div>
+      <button class="action-btn btn-gray" onclick="clearSbBets()">清除注碼</button>
+      <button class="action-btn btn-orange" onclick="rebetSb()">重複上局</button>
+      <button class="action-btn btn-green" id="btn-sb-roll" onclick="rollSicBo()">🎲 搖骰開盅</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================
+     畫面 6：五張話事啤 (星宿宗師對決)
+     ========================================================= -->
+<div id="screen-stud" class="screen">
+  <div class="stud-table">
+    <div class="stud-opponents-row">
+      <div class="stud-seat" id="stud-seat-ai1">
+        <div class="stud-seat-header">
+          <span class="stud-player-title" id="stud-ai1-name">🐉 青龍星君</span>
+          <span class="stud-speech" id="stud-ai1-speech">請賜教！</span>
+        </div>
+        <div class="card-row" id="stud-ai1-cards"></div>
+      </div>
+
+      <div class="stud-seat" id="stud-seat-ai2">
+        <div class="stud-seat-header">
+          <span class="stud-player-title" id="stud-ai2-name">🦁 獅子星君</span>
+          <span class="stud-speech" id="stud-ai2-speech">祝君好運！</span>
+        </div>
+        <div class="card-row" id="stud-ai2-cards"></div>
+      </div>
+    </div>
+
+    <div class="stud-pot-center" id="stud-pot-banner">
+      🏆 彩池總額：$<span id="stud-pot-val">0</span> ｜ <span id="stud-status-msg">撳「派牌開局」與星宿高手過招！（底注 $200）</span>
+    </div>
+
+    <div class="stud-seat" id="stud-seat-hero" style="width:100%; max-width:850px; align-self:center;">
+      <div class="stud-seat-header">
+        <span class="stud-player-title" id="stud-hero-name">👑 你嘅手牌</span>
+        <span class="stud-speech" id="stud-hero-rank-label" style="background:#004d1a;">等待開局</span>
+      </div>
+      <div class="card-row" id="stud-hero-cards"></div>
+    </div>
+
+    <div class="bj-controls" id="stud-start-controls">
+      <button class="action-btn btn-orange" onclick="changeStudOpponents()">🔄 換其他生肖/星座高手</button>
+      <button class="action-btn btn-green" style="font-size:30px; padding:12px 45px;" onclick="startStudRound()">🂡 派牌開局 (底注 $200)</button>
+    </div>
+
+    <div class="bj-controls" id="stud-action-controls" style="display:none;">
+      <button class="action-btn btn-green" onclick="studPlayerAct('check_call')" id="btn-stud-call">✅ 過牌 / 跟注 ($200)</button>
+      <button class="action-btn btn-orange" onclick="studPlayerAct('raise500')">➕ 加注 $500</button>
+      <button class="action-btn btn-purple" onclick="studPlayerAct('raise1000')">🔥 加注 $1,000</button>
+      <button class="action-btn btn-red" onclick="studPlayerAct('showhand')">🚀 話事梭哈 ($2,000)</button>
+      <button class="action-btn btn-gray" onclick="studPlayerAct('fold')">🏳️ 棄牌唔跟</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================
+     畫面 7：星象電子輪盤
+     ========================================================= -->
+<div id="screen-roulette" class="screen">
+  <div class="roulette-layout">
+    <div class="rl-top-bar">
+      <div class="rl-wheel-box">
+        <div class="rl-wheel-circle" id="rl-wheel">
+          <div class="rl-ball-num" id="rl-result-num">?</div>
+        </div>
+        <div>
+          <div style="font-size:24px; font-weight:900; color:var(--gold);" id="rl-status-title">請篤下方號碼或紅黑落注！</div>
+          <div style="font-size:19px; color:#ffdddd; font-weight:bold;" id="rl-history-text">最近開出：暫無記錄</div>
+        </div>
+      </div>
+      <button class="action-btn btn-purple" style="font-size:22px; padding:10px 18px;" onclick="betZodiacLuckyNums()">
+        🌟 一鍵買齊「五大星宿吉數」
+      </button>
+    </div>
+
+    <div class="rl-board">
+      <div class="rl-numbers-grid" id="rl-numbers-grid"></div>
+
+      <div class="rl-outside-row">
+        <div class="rl-out-cell" data-rl="doz1" onclick="placeRlBet('doz1')">第一打 (1-12) 1賠2</div>
+        <div class="rl-out-cell" data-rl="doz2" onclick="placeRlBet('doz2')">第二打 (13-24) 1賠2</div>
+        <div class="rl-out-cell" data-rl="doz3" onclick="placeRlBet('doz3')">第三打 (25-36) 1賠2</div>
+      </div>
+
+      <div class="rl-outside-row6">
+        <div class="rl-out-cell" data-rl="low" onclick="placeRlBet('low')">細 (1-18)</div>
+        <div class="rl-out-cell" data-rl="even" onclick="placeRlBet('even')">雙數</div>
+        <div class="rl-out-cell red-zone" data-rl="red" onclick="placeRlBet('red')">🔴 紅 (Red)</div>
+        <div class="rl-out-cell black-zone" data-rl="black" onclick="placeRlBet('black')">⚫ 黑 (Black)</div>
+        <div class="rl-out-cell" data-rl="odd" onclick="placeRlBet('odd')">單數</div>
+        <div class="rl-out-cell" data-rl="high" onclick="placeRlBet('high')">大 (19-36)</div>
+      </div>
+    </div>
+
+    <div class="bj-controls">
+      <span style="font-size:22px; font-weight:bold; color:var(--gold);">揀籌碼：</span>
+      <button class="chip-btn chip-100" onclick="selectTableChip(100, this)">$100</button>
+      <button class="chip-btn chip-500 selected-chip" onclick="selectTableChip(500, this)">$500</button>
+      <button class="chip-btn chip-1000" onclick="selectTableChip(1000, this)">$1000</button>
+      <button class="chip-btn chip-5000" onclick="selectTableChip(5000, this)">$5000</button>
+      <div style="font-size:24px; font-weight:900; color:var(--gold); margin:0 8px;">
+        總注：$<span id="rl-total-bet">0</span>
+      </div>
+      <button class="action-btn btn-gray" onclick="clearRlBets()">清除注碼</button>
+      <button class="action-btn btn-orange" onclick="rebetRl()">重複上局</button>
+      <button class="action-btn btn-green" id="btn-rl-spin" onclick="spinRoulette()">🎡 轉動輪盤</button>
+    </div>
+  </div>
+</div>
+
+<!-- 一般訊息彈出視窗 -->
+<div id="modal-overlay" class="overlay-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">標題</div>
+    <div class="modal-text" id="modal-text">內容</div>
+    <button class="spin-btn" style="font-size:28px; padding:12px 45px;" onclick="closeModal()">確定</button>
+  </div>
+</div>
+
+<!-- 玩家改名及選擇生肖/星座視窗 -->
+<div id="edit-modal-overlay" class="overlay-modal">
+  <div class="modal-box">
+    <div class="modal-title">✏️ 設定玩家名稱與守護星</div>
+    <input type="text" id="edit-name-input" class="name-input" maxlength="8" placeholder="請輸入你個名">
+    <div style="font-size:20px; color:#ffe082; margin-bottom:8px; font-weight:bold;">請點選你的 12 生肖或 12 星座代表圖案：</div>
+    <div class="avatar-picker-grid" id="avatar-picker-grid"></div>
+    <div style="display:flex; justify-content:center; gap:20px;">
+      <button class="action-btn btn-gray" onclick="closeEditModal()">取消</button>
+      <button class="action-btn btn-green" onclick="saveProfileEdit()">💾 儲存設定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/**************************************************************
+ * 1. 雲端同步、12生肖 + 12星座設定
+ **************************************************************/
+const CLOUD_API_URL = ""; // 如需連 Google Sheet，貼上 Apps Script 網址
+
+// 12生肖 + 12星座完整清單
+const ZODIAC_LIST = [
+  // 十二生肖
+  { icon: "🐭", label: "靈鼠", luckyNum: 1 },
+  { icon: "🐮", label: "金牛", luckyNum: 2 },
+  { icon: "🐯", label: "猛虎", luckyNum: 3 },
+  { icon: "🐰", label: "玉兔", luckyNum: 4 },
+  { icon: "🐉", label: "金龍", luckyNum: 8 },
+  { icon: "🐍", label: "靈蛇", luckyNum: 6 },
+  { icon: "🐎", label: "駿馬", luckyNum: 7 },
+  { icon: "🐐", label: "吉羊", luckyNum: 15 },
+  { icon: "🐵", label: "靈猴", luckyNum: 9 },
+  { icon: "🐔", label: "金雞", luckyNum: 10 },
+  { icon: "🐶", label: "旺犬", luckyNum: 11 },
+  { icon: "🐷", label: "福豬", luckyNum: 12 },
+  // 十二星座
+  { icon: "♈", label: "白羊座", luckyNum: 19 },
+  { icon: "♉", label: "金牛座", luckyNum: 20 },
+  { icon: "♊", label: "雙子座", luckyNum: 21 },
+  { icon: "♋", label: "巨蟹座", luckyNum: 22 },
+  { icon: "♌", label: "獅子座", luckyNum: 23 },
+  { icon: "♍", label: "處女座", luckyNum: 24 },
+  { icon: "♎", label: "天秤座", luckyNum: 26 },
+  { icon: "♏", label: "天蠍座", luckyNum: 28 },
+  { icon: "♐", label: "射手座", luckyNum: 29 },
+  { icon: "♑", label: "山羊座", luckyNum: 31 },
+  { icon: "♒", label: "水瓶座", luckyNum: 33 },
+  { icon: "♓", label: "雙魚座", luckyNum: 36 }
+];
+
+// 預設 4 個玩家位（朋友可自行改名及換生肖星座）
+let PLAYERS = [
+  { id: "p1", name: "金龍大俠", avatar: "🐉" },
+  { id: "p2", name: "猛虎賭神", avatar: "🐯" },
+  { id: "p3", name: "獅子星王", avatar: "♌" },
+  { id: "p4", name: "天秤高手", avatar: "♎" }
+];
+
+// 星宿護法與話事啤對手清單
+const STAR_GUARDIANS = [
+  { name: "金龍星君", icon: "🐉", luckyNum: 8,  blessing: "龍馬精神、橫財就手！" },
+  { name: "猛虎財神", icon: "🐯", luckyNum: 16, blessing: "虎虎生威、日進斗金！" },
+  { name: "駿馬福星", icon: "🐎", luckyNum: 18, blessing: "馬到功成、盤滿缽滿！" },
+  { name: "獅子星王", icon: "♌", luckyNum: 23, blessing: "王者霸氣、百戰百勝！" },
+  { name: "射手幸運星", icon: "♐", luckyNum: 32, blessing: "百發百中、開口中大獎！" },
+  { name: "玉兔吉星", icon: "🐰", luckyNum: 6,  blessing: "鴻運當頭、財源滾滾！" },
+  { name: "天秤星官", icon: "♎", luckyNum: 26, blessing: "順風順水、一本萬利！" }
+];
+
+let currentUser = null;
+let allUserData = {};
+let currentTableChip = 500;
+let editingPlayerIdx = null;
+let tempSelectedAvatar = "🐉";
+
+// 音效引擎 (Web Audio API)
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function initAudio() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+function playTone(freq, type, duration, delay = 0, vol = 0.25) {
+  try {
+    initAudio();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime + delay);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(audioCtx.currentTime + delay);
+    osc.stop(audioCtx.currentTime + delay + duration);
+  } catch(e) {}
+}
+function sfxClick() { playTone(600, 'sine', 0.08, 0, 0.2); }
+function sfxReelTick() { playTone(320, 'triangle', 0.05, 0, 0.15); }
+function sfxCard() { playTone(480, 'sine', 0.09, 0, 0.2); }
+function sfxWinSmall() {
+  [523, 659, 784, 1046].forEach((f, i) => playTone(f, 'triangle', 0.18, i * 0.09, 0.3));
+}
+function sfxWinBig() {
+  [523, 659, 784, 1046, 784, 1046, 1318, 1568].forEach((f, i) => playTone(f, 'square', 0.22, i * 0.1, 0.25));
+}
+function sfxLose() {
+  [350, 300, 250].forEach((f, i) => playTone(f, 'sawtooth', 0.2, i * 0.15, 0.18));
+}
+
+function selectTableChip(amt, btnEl) {
+  sfxClick();
+  currentTableChip = amt;
+  const parent = btnEl.parentElement;
+  parent.querySelectorAll(".chip-btn").forEach(b => b.classList.remove("selected-chip"));
+  btnEl.classList.add("selected-chip");
+}
+
+/**************************************************************
+ * 2. 資料讀取、儲存與玩家自訂名稱/生肖星座
+ **************************************************************/
+function getTodayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+async function loadAllData() {
+  const savedProfiles = localStorage.getItem("macau_zodiac_profiles_v1");
+  if (savedProfiles) {
+    try { PLAYERS = JSON.parse(savedProfiles); } catch(e) {}
+  }
+
+  const local = localStorage.getItem("macau_zodiac_casino_v1");
+  if (local) {
+    try { allUserData = JSON.parse(local); } catch(e) { allUserData = {}; }
+  }
+  if (CLOUD_API_URL) {
+    try {
+      const res = await fetch(CLOUD_API_URL);
+      const cloudData = await res.json();
+      if (cloudData && typeof cloudData === 'object') {
+        allUserData = { ...allUserData, ...cloudData };
+        localStorage.setItem("macau_zodiac_casino_v1", JSON.stringify(allUserData));
+      }
+    } catch (e) { console.log("使用本機存檔模式"); }
+  }
+  renderUserCards();
+}
+
+async function saveUserData() {
+  if (!currentUser) return;
+  allUserData[currentUser.id] = {
+    coins: currentUser.coins,
+    lastDate: currentUser.lastDate
+  };
+  localStorage.setItem("macau_zodiac_casino_v1", JSON.stringify(allUserData));
+  updateCoinUI();
+
+  if (CLOUD_API_URL) {
+    try {
+      fetch(CLOUD_API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: currentUser.id,
+          coins: currentUser.coins,
+          lastDate: currentUser.lastDate
+        })
+      });
+    } catch (e) {}
+  }
+}
+
+function renderUserCards() {
+  const grid = document.getElementById("user-grid");
+  grid.innerHTML = "";
+  PLAYERS.forEach((p, idx) => {
+    const saved = allUserData[p.id];
+    const coinsText = saved ? `🪙 $${saved.coins.toLocaleString()}` : `🎁 開戶送 $10,000`;
+    const card = document.createElement("div");
+    card.className = "user-card";
+    card.onclick = () => selectUser(p);
+    card.innerHTML = `
+      <div class="user-avatar">${p.avatar}</div>
+      <div class="user-name">${p.name}</div>
+      <div class="user-coins-preview">${coinsText}</div>
+      <div class="edit-profile-btn" onclick="openEditModal(event, ${idx})">✏️ 改名 / 換生肖星座</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function openEditModal(e, idx) {
+  e.stopPropagation();
+  sfxClick();
+  editingPlayerIdx = idx;
+  const p = PLAYERS[idx];
+  document.getElementById("edit-name-input").value = p.name;
+  tempSelectedAvatar = p.avatar;
+
+  const picker = document.getElementById("avatar-picker-grid");
+  picker.innerHTML = "";
+  ZODIAC_LIST.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "avatar-opt" + (item.icon === tempSelectedAvatar ? " selected" : "");
+    div.innerHTML = `${item.icon}<span>${item.label}</span>`;
+    div.onclick = () => {
+      sfxClick();
+      tempSelectedAvatar = item.icon;
+      picker.querySelectorAll(".avatar-opt").forEach(el => el.classList.remove("selected"));
+      div.classList.add("selected");
+    };
+    picker.appendChild(div);
+  });
+
+  document.getElementById("edit-modal-overlay").classList.add("show");
+}
+
+function closeEditModal() {
+  sfxClick();
+  document.getElementById("edit-modal-overlay").classList.remove("show");
+}
+
+function saveProfileEdit() {
+  sfxClick();
+  const newName = document.getElementById("edit-name-input").value.trim() || "幸運星玩家";
+  PLAYERS[editingPlayerIdx].name = newName;
+  PLAYERS[editingPlayerIdx].avatar = tempSelectedAvatar;
+  localStorage.setItem("macau_zodiac_profiles_v1", JSON.stringify(PLAYERS));
+  renderUserCards();
+  closeEditModal();
+}
+
+function selectUser(p) {
+  sfxClick();
+  const today = getTodayStr();
+  let saved = allUserData[p.id];
+  let bonusMsg = "";
+  const star = STAR_GUARDIANS[Math.floor(Math.random() * STAR_GUARDIANS.length)];
+
+  if (!saved) {
+    saved = { coins: 10000, lastDate: today };
+    bonusMsg = `歡迎【${p.avatar} ${p.name}】首次光臨！\n金龍娛樂場送上開戶大禮 🪙 $10,000 籌碼！\n今日值日星神 ${star.icon}【${star.name}】祝你：${star.blessing}`;
+    sfxWinBig();
+  } else if (saved.lastDate !== today) {
+    if (saved.coins < 5000) {
+      saved.coins = 5000;
+      bonusMsg = `歡迎回來【${p.name}】！\n今日值日星神 ${star.icon}【${star.name}】已自動為你補滿籌碼至 🪙 $5,000！\n\n星神賜福：「${star.blessing}」`;
+    } else {
+      saved.coins += 2000;
+      bonusMsg = `歡迎回來【${p.name}】！\n今日值日星神 ${star.icon}【${star.name}】派發每日利是 +$2,000！\n你目前總共有 🪙 $${saved.coins.toLocaleString()}！\n\n星神賜福：「${star.blessing}」`;
+    }
+    saved.lastDate = today;
+    sfxWinSmall();
+  }
+
+  currentUser = { ...p, coins: saved.coins, lastDate: saved.lastDate };
+  saveUserData();
+
+  document.getElementById("top-user-area").style.display = "flex";
+  document.getElementById("current-user-label").innerText = `${p.avatar} ${p.name}`;
+  goLobby();
+
+  if (bonusMsg) {
+    showModal("🧧 星宿財神派彩", bonusMsg);
+  } else if (currentUser.coins <= 0) {
+    showModal("🍵 今日休息一下", `今日嘅籌碼已經玩晒喇！\n${star.icon}【${star.name}】提示：「明日過咗12點再登入，系統會自動派發 $5,000 新籌碼俾你再戰江湖！」`);
+  }
+}
+
+function updateCoinUI() {
+  if (!currentUser) return;
+  document.getElementById("coin-display").innerText = currentUser.coins.toLocaleString();
+}
+
+function checkBankrupt() {
+  if (currentUser.coins <= 0) {
+    const star = STAR_GUARDIANS[Math.floor(Math.random() * STAR_GUARDIANS.length)];
+    setTimeout(() => {
+      showModal("🍵 明日再戰江湖", `今日嘅籌碼已經用盡喇！\n${star.icon}【${star.name}】話：「留得青山在，明日過咗12點再入嚟，自動補滿 $5,000 籌碼俾你繼續發財！」`);
+    }, 600);
+    return true;
+  }
+  return false;
+}
+
+/**************************************************************
+ * 3. 畫面切換與彈出視窗
+ **************************************************************/
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+function goLobby() {
+  sfxClick();
+  showScreen("screen-lobby");
+  document.getElementById("btn-back-lobby").style.display = "none";
+}
+function switchUser() {
+  sfxClick();
+  currentUser = null;
+  document.getElementById("top-user-area").style.display = "none";
+  renderUserCards();
+  showScreen("screen-users");
+}
+function openGame(game) {
+  sfxClick();
+  if (currentUser.coins <= 0) {
+    checkBankrupt();
+    return;
+  }
+  document.getElementById("btn-back-lobby").style.display = "inline-block";
+  if (game === "slots") {
+    showScreen("screen-slots");
+    initSlotsUI();
+  } else if (game === "blackjack") {
+    initBlackjackUI();
+    showScreen("screen-blackjack");
+  } else if (game === "sicbo") {
+    initSicBoUI();
+    showScreen("screen-sicbo");
+  } else if (game === "stud") {
+    initStudUI();
+    showScreen("screen-stud");
+  } else if (game === "roulette") {
+    initRouletteUI();
+    showScreen("screen-roulette");
+  }
+}
+function showModal(title, text) {
+  document.getElementById("modal-title").innerText = title;
+  document.getElementById("modal-text").innerText = text;
+  document.getElementById("modal-overlay").classList.add("show");
+}
+function closeModal() {
+  sfxClick();
+  document.getElementById("modal-overlay").classList.remove("show");
+}
+function showRulesModal() {
+  showModal("🧧 每日派彩說明", "1. 首次開戶即送 $10,000 籌碼！\n2. 贏得嘅籌碼會自動儲存，明日繼續累積。\n3. 每日過凌晨 12 點首次登入：若籌碼少於 $5,000 會自動補滿至 $5,000；若多於 $5,000 則額外加送 $2,000 每日利是！");
+}
+
+/**************************************************************
+ * 4. 遊戲一：《瑞獸星宿》5軸 × 3行 (可自選 1/5/9/15/20 線)
+ **************************************************************/
+const SLOT_SYMBOLS = [
+  { id: "wild",  icon: "🐉", name: "金龍(百搭)", weight: 8,  pay: [0, 0, 50, 150, 500], isZodiac: false },
+  { id: "scat",  icon: "🔮", name: "星盤(免費)", weight: 7,  pay: [0, 0, 20, 80,  250], isZodiac: false },
+  { id: "tiger", icon: "🐯", name: "猛虎瑞獸",   weight: 13, pay: [0, 0, 35, 110, 320], isZodiac: true, zName: "猛虎" },
+  { id: "horse", icon: "🐎", name: "千里駿馬",   weight: 16, pay: [0, 0, 25, 80,  220], isZodiac: true, zName: "駿馬" },
+  { id: "rab",   icon: "🐰", name: "招財玉兔",   weight: 19, pay: [0, 0, 20, 60,  160], isZodiac: true, zName: "玉兔" },
+  { id: "leo",   icon: "♌", name: "獅子金星",   weight: 22, pay: [0, 0, 15, 45,  120], isZodiac: true, zName: "獅子星" },
+  { id: "sag",   icon: "♐", name: "射手吉星",   weight: 25, pay: [0, 0, 12, 35,  90],  isZodiac: true, zName: "射手星" },
+  { id: "ingot", icon: "🪙", name: "金元寶",     weight: 30, pay: [0, 0, 6,  18,  45],  isZodiac: false }
+];
+
+const PAYLINES_20 = [
+  [1,1,1,1,1], [0,0,0,0,0], [2,2,2,2,2], [0,1,2,1,0], [2,1,0,1,2],
+  [0,0,1,0,0], [2,2,1,2,2], [1,0,0,0,1], [1,2,2,2,1], [0,1,1,1,0],
+  [2,1,1,1,2], [0,1,0,1,0], [2,1,2,1,2], [1,0,1,0,1], [1,2,1,2,1],
+  [1,1,0,1,1], [1,1,2,1,1], [0,2,0,2,0], [2,0,2,0,2], [0,2,2,2,0]
+];
+
+const LINE_COLORS = [
+  "#FF3333", "#00E676", "#29B6F6", "#FFEA00", "#E040FB",
+  "#FF9100", "#1DE9B6", "#F50057", "#CDDC39", "#651FFF",
+  "#FF5252", "#69F0AE", "#40C4FF", "#FFD740", "#EA80FC",
+  "#FFAB40", "#64FFDA", "#FF4081", "#EEFF41", "#7C4DFF"
+];
+
+let selectedLines = 20;
+let betPerLine = 5;
+let slotFreeSpins = 0;
+let isSpinning = false;
+let currentGrid = [];
+
+function getTotalSlotBet() { return selectedLines * betPerLine; }
+
+function randomSlotSymbol() {
+  const totalW = SLOT_SYMBOLS.reduce((s, a) => s + a.weight, 0);
+  let r = Math.random() * totalW;
+  for (const sym of SLOT_SYMBOLS) {
+    if (r < sym.weight) return sym;
+    r -= sym.weight;
+  }
+  return SLOT_SYMBOLS[SLOT_SYMBOLS.length - 1];
+}
+
+function renderSlotCell(cellEl, sym) {
+  cellEl.className = "slot-cell" + (sym.isZodiac ? " zodiac-cell" : "");
+  cellEl.innerHTML = `<div>${sym.icon}</div><span class="sym-label">${sym.name}</span>`;
+}
+
+function renderLinePillars() {
+  const leftP = document.getElementById("left-pillars");
+  const rightP = document.getElementById("right-pillars");
+  leftP.innerHTML = ""; rightP.innerHTML = "";
+  for (let i = 0; i < 20; i++) {
+    const pill = document.createElement("div");
+    const active = i < selectedLines;
+    pill.className = "line-pill" + (active ? " active-line" : "");
+    if (active) { pill.style.background = LINE_COLORS[i]; pill.style.color = "#000"; }
+    pill.innerText = `${i + 1}線`;
+    if (i < 10) leftP.appendChild(pill);
+    else rightP.appendChild(pill);
+  }
+}
+
+function updateSlotBetUI() {
+  document.getElementById("total-bet-desc").innerText = `${selectedLines}線 × $${betPerLine}`;
+  document.getElementById("total-bet-num").innerText = getTotalSlotBet().toLocaleString();
+  renderLinePillars();
+}
+
+function initSlotsUI() {
+  const frame = document.getElementById("reel-frame");
+  frame.innerHTML = "";
+  clearPaylineSVG();
+  currentGrid = [];
+  for (let c = 0; c < 5; c++) {
+    const colDiv = document.createElement("div");
+    colDiv.className = "reel-col";
+    colDiv.id = `reel-col-${c}`;
+    const colArr = [];
+    for (let r = 0; r < 3; r++) {
+      const sym = randomSlotSymbol();
+      colArr.push(sym);
+      const cell = document.createElement("div");
+      cell.id = `slot-cell-${c}-${r}`;
+      renderSlotCell(cell, sym);
+      colDiv.appendChild(cell);
+    }
+    currentGrid.push(colArr);
+    frame.appendChild(colDiv);
+  }
+  updateSlotBetUI();
+}
+
+function setSlotLines(lines, btnEl) {
+  if (isSpinning || slotFreeSpins > 0) return;
+  sfxClick();
+  selectedLines = lines;
+  document.querySelectorAll("#line-count-row .opt-btn").forEach(b => b.classList.remove("active"));
+  btnEl.classList.add("active");
+  updateSlotBetUI();
+  const indices = [];
+  for (let i = 0; i < selectedLines; i++) indices.push(i);
+  drawPaylinesSVG(indices, true);
+}
+
+function setSlotLineBet(amt, btnEl) {
+  if (isSpinning || slotFreeSpins > 0) return;
+  sfxClick();
+  betPerLine = amt;
+  document.querySelectorAll("#line-bet-row .opt-btn").forEach(b => b.classList.remove("active"));
+  btnEl.classList.add("active");
+  updateSlotBetUI();
+}
+
+function clearPaylineSVG() {
+  const svg = document.getElementById("payline-svg");
+  if (svg) svg.innerHTML = "";
+}
+
+function drawPaylinesSVG(lineIndices, isPreview = false) {
+  const svg = document.getElementById("payline-svg");
+  const wrap = document.querySelector(".reel-frame-wrap");
+  if (!svg || !wrap) return;
+  svg.innerHTML = "";
+  const wrapRect = wrap.getBoundingClientRect();
+
+  lineIndices.forEach((lineIdx) => {
+    const pattern = PAYLINES_20[lineIdx];
+    const points = [];
+    for (let c = 0; c < 5; c++) {
+      const cell = document.getElementById(`slot-cell-${c}-${pattern[c]}`);
+      if (!cell) continue;
+      const rect = cell.getBoundingClientRect();
+      const x = rect.left - wrapRect.left + rect.width / 2;
+      const y = rect.top - wrapRect.top + rect.height / 2;
+      points.push(`${x},${y}`);
+    }
+    const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    polyline.setAttribute("points", points.join(" "));
+    polyline.setAttribute("fill", "none");
+    polyline.setAttribute("stroke", LINE_COLORS[lineIdx]);
+    polyline.setAttribute("stroke-width", isPreview ? "5" : "8");
+    polyline.setAttribute("stroke-linecap", "round");
+    polyline.setAttribute("stroke-linejoin", "round");
+    polyline.style.opacity = isPreview ? "0.7" : "0.95";
+    polyline.style.filter = "drop-shadow(0px 0px 6px #000)";
+    svg.appendChild(polyline);
+  });
+
+  if (isPreview) {
+    setTimeout(() => { if (!isSpinning) clearPaylineSVG(); }, 1100);
+  }
+}
+
+function spinSlots() {
+  if (isSpinning) return;
+  clearPaylineSVG();
+  const msgEl = document.getElementById("slot-msg");
+  msgEl.classList.remove("win-flash");
+  const totalBet = getTotalSlotBet();
+
+  if (slotFreeSpins > 0) {
+    slotFreeSpins--;
+    document.getElementById("fs-count").innerText = slotFreeSpins;
+    msgEl.innerText = "🎁 星盤免費旋轉進行中... 吉星拱照大獎連連！";
+  } else {
+    if (currentUser.coins < totalBet) {
+      if (!checkBankrupt()) {
+        showModal("籌碼不足", `你而家得 $${currentUser.coins}，唔夠買 $${totalBet}（${selectedLines}線 × $${betPerLine}），請揀少啲線或者細啲嘅線注！`);
+      }
+      return;
+    }
+    currentUser.coins -= totalBet;
+    saveUserData();
+    msgEl.innerText = `已買 ${selectedLines} 條線（總注 $${totalBet}）— 轉動中...`;
+  }
+
+  isSpinning = true;
+  document.getElementById("btn-spin").disabled = true;
+  document.querySelectorAll(".slot-cell").forEach(el => el.classList.remove("win-cell"));
+
+  const finalGrid = [];
+  for (let c = 0; c < 5; c++) {
+    finalGrid.push([randomSlotSymbol(), randomSlotSymbol(), randomSlotSymbol()]);
+  }
+
+  for (let c = 0; c < 5; c++) {
+    const timer = setInterval(() => {
+      for (let r = 0; r < 3; r++) {
+        const tempSym = randomSlotSymbol();
+        const cell = document.getElementById(`slot-cell-${c}-${r}`);
+        renderSlotCell(cell, tempSym);
+      }
+    }, 75);
+
+    setTimeout(() => {
+      clearInterval(timer);
+      sfxReelTick();
+      for (let r = 0; r < 3; r++) {
+        const sym = finalGrid[c][r];
+        const cell = document.getElementById(`slot-cell-${c}-${r}`);
+        renderSlotCell(cell, sym);
+      }
+      if (c === 4) {
+        currentGrid = finalGrid;
+        evaluateSlotsWin();
+      }
+    }, 350 + c * 220);
+  }
+}
+
+function evaluateSlotsWin() {
+  const totalBet = getTotalSlotBet();
+  let totalWin = 0;
+  let winningCells = new Set();
+  let winningLineIndices = [];
+  let winningZodiacs = new Set();
+
+  for (let lineIdx = 0; lineIdx < selectedLines; lineIdx++) {
+    const line = PAYLINES_20[lineIdx];
+    let baseSym = null;
+    for (let c = 0; c < 5; c++) {
+      const s = currentGrid[c][line[c]];
+      if (s.id === "scat") break;
+      if (s.id !== "wild") { baseSym = s; break; }
+    }
+    if (!baseSym) baseSym = SLOT_SYMBOLS[0];
+
+    let matchCount = 0;
+    for (let c = 0; c < 5; c++) {
+      const s = currentGrid[c][line[c]];
+      if (s.id === baseSym.id || s.id === "wild") matchCount++;
+      else break;
+    }
+
+    if (matchCount >= 3) {
+      const lineWin = Math.round(betPerLine * baseSym.pay[matchCount - 1]);
+      totalWin += lineWin;
+      winningLineIndices.push(lineIdx);
+      if (baseSym.isZodiac) winningZodiacs.add(baseSym.zName);
+      for (let c = 0; c < matchCount; c++) winningCells.add(`${c}-${line[c]}`);
+    }
+  }
+
+  let scatCells = [];
+  for (let c = 0; c < 5; c++) {
+    for (let r = 0; r < 3; r++) {
+      if (currentGrid[c][r].id === "scat") scatCells.push(`${c}-${r}`);
+    }
+  }
+  let triggeredFS = false;
+  if (scatCells.length >= 3) {
+    triggeredFS = true;
+    slotFreeSpins += 8;
+    totalWin += totalBet * 2;
+    scatCells.forEach(id => winningCells.add(id));
+  }
+
+  winningCells.forEach(id => {
+    const el = document.getElementById(`slot-cell-${id}`);
+    if (el) el.classList.add("win-cell");
+  });
+
+  if (winningLineIndices.length > 0) drawPaylinesSVG(winningLineIndices, false);
+
+  const msgEl = document.getElementById("slot-msg");
+  if (totalWin > 0) {
+    currentUser.coins += totalWin;
+    saveUserData();
+    msgEl.classList.add("win-flash");
+    const zText = winningZodiacs.size > 0 ? `【${Array.from(winningZodiacs).join("、")}】顯靈！` : "";
+
+    if (triggeredFS) {
+      sfxWinBig();
+      msgEl.innerText = `🎊 星盤齊聚！觸發 8 次免費旋轉 + 贏得 $${totalWin.toLocaleString()}！`;
+    } else if (totalWin >= totalBet * 5) {
+      sfxWinBig();
+      msgEl.innerText = `🎉 超級大獎！${zText}中 ${winningLineIndices.length} 條線，大贏 $${totalWin.toLocaleString()}！`;
+    } else {
+      sfxWinSmall();
+      msgEl.innerText = `✨ 恭喜中獎！${zText}共中 ${winningLineIndices.length} 條線，贏得 $${totalWin.toLocaleString()}！`;
+    }
+  } else {
+    const star = STAR_GUARDIANS[Math.floor(Math.random() * STAR_GUARDIANS.length)];
+    msgEl.innerText = `${star.icon} ${star.name}：「財氣正在聚集，下一轉就中大獎！」`;
+    checkBankrupt();
+  }
+
+  const fsBadge = document.getElementById("slot-fs-badge");
+  if (slotFreeSpins > 0) {
+    fsBadge.style.display = "block";
+    document.getElementById("fs-count").innerText = slotFreeSpins;
+  } else {
+    fsBadge.style.display = "none";
+  }
+
+  isSpinning = false;
+  document.getElementById("btn-spin").disabled = false;
+}
+
+/**************************************************************
+ * 5. 遊戲二：澳門電子 21 點
+ **************************************************************/
+const SUITS = ["♠", "♥", "♣", "♦"];
+const RANKS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+let bjDeck = [];
+let playerHand = [];
+let dealerHand = [];
+let bjBet = 0;
+let lastBjBet = 500;
+let bjInPlay = false;
+
+function setBjCheer(type) {
+  const star = STAR_GUARDIANS[Math.floor(Math.random() * STAR_GUARDIANS.length)];
+  const bar = document.getElementById("bj-cheer-msg");
+  const lines = {
+    bet:    `${star.icon} 【${star.name}】：「今日財星當旺，落注開局啦！」`,
+    deal:   `${star.icon} 【${star.name}】：「星象顯示呢副牌氣勢如虹！」`,
+    win:    `${star.icon} 【${star.name}】讚嘆：「漂亮！技術與運氣兼備，輕鬆贏莊家！」`,
+    bigwin: `🎊 紫微星照・瑞獸齊鳴：「天生 21 點 (Blackjack)！賭神降臨！」`,
+    lose:   `${star.icon} 【${star.name}】：「小試牛刀，下一局運勢即刻逆轉！」`,
+    push:   `${star.icon} 【${star.name}】：「和氣生財，收回本金再攻一局！」`
+  };
+  bar.innerText = lines[type] || lines.bet;
+}
+
+function initBlackjackUI() {
+  bjBet = 0;
+  bjInPlay = false;
+  document.getElementById("bj-dealer-cards").innerHTML = "";
+  document.getElementById("bj-player-cards").innerHTML = "";
+  document.getElementById("bj-dealer-score").innerText = "- 點";
+  document.getElementById("bj-player-score").innerText = "- 點";
+  document.getElementById("bj-bet-controls").style.display = "flex";
+  document.getElementById("bj-play-controls").style.display = "none";
+  document.getElementById("bj-last-bet-label").innerText = lastBjBet;
+  document.getElementById("bj-banner").innerText = "請撳下方籌碼落注！（本局注碼：$0）";
+  setBjCheer("bet");
+}
+
+function buildDeck() {
+  bjDeck = [];
+  for (let d = 0; d < 4; d++) {
+    for (const s of SUITS) {
+      for (const r of RANKS) bjDeck.push({ suit: s, rank: r });
+    }
+  }
+  bjDeck.sort(() => Math.random() - 0.5);
+}
+
+function calcHandScore(hand) {
+  let sum = 0, aces = 0;
+  for (const c of hand) {
+    if (c.rank === "A") { aces++; sum += 11; }
+    else if (["10", "J", "Q", "K"].includes(c.rank)) sum += 10;
+    else sum += parseInt(c.rank, 10);
+  }
+  while (sum > 21 && aces > 0) { sum -= 10; aces--; }
+  return sum;
+}
+
+function renderCardHTML(card, hidden = false) {
+  if (hidden) return `<div class="playing-card back"></div>`;
+  const isRed = card.suit === "♥" || card.suit === "♦";
+  return `
+    <div class="playing-card ${isRed ? 'red' : 'black'}">
+      <div class="card-rank">${card.rank}</div>
+      <div class="card-suit-center">${card.suit}</div>
+      <div class="card-suit-bot">${card.suit}</div>
+    </div>
+  `;
+}
+
+function renderBjTable(hideDealerHole = true) {
+  const dContainer = document.getElementById("bj-dealer-cards");
+  const pContainer = document.getElementById("bj-player-cards");
+
+  dContainer.innerHTML = dealerHand.map((c, idx) => renderCardHTML(c, hideDealerHole && idx === 1)).join("");
+  pContainer.innerHTML = playerHand.map(c => renderCardHTML(c, false)).join("");
+
+  const pScore = calcHandScore(playerHand);
+  document.getElementById("bj-player-score").innerText = `${pScore} 點`;
+
+  if (hideDealerHole && dealerHand.length > 0) {
+    const firstScore = calcHandScore([dealerHand[0]]);
+    document.getElementById("bj-dealer-score").innerText = `${firstScore} 點 + 暗牌`;
+  } else {
+    document.getElementById("bj-dealer-score").innerText = `${calcHandScore(dealerHand)} 點`;
+  }
+}
+
+function addBjBet(amt) {
+  if (bjInPlay) return;
+  if (currentUser.coins < bjBet + amt) {
+    showModal("籌碼不足", "你戶口入面嘅籌碼唔夠再加注喇！");
+    return;
+  }
+  sfxClick();
+  bjBet += amt;
+  document.getElementById("bj-banner").innerText = `已落注：$${bjBet.toLocaleString()} — 撳「派牌開局」開始！`;
+}
+
+function clearBjBet() {
+  if (bjInPlay) return;
+  sfxClick();
+  bjBet = 0;
+  document.getElementById("bj-banner").innerText = "請撳下方籌碼落注！（本局注碼：$0）";
+}
+
+function rebetBj() {
+  if (bjInPlay) return;
+  if (currentUser.coins < lastBjBet) {
+    showModal("籌碼不足", `你唔夠 $${lastBjBet} 重複上局注碼，請直接撳籌碼落注！`);
+    return;
+  }
+  bjBet = lastBjBet;
+  dealBj();
+}
+
+function dealBj() {
+  if (bjInPlay) return;
+  if (bjBet <= 0) {
+    showModal("請先落注", "請先撳下方嘅圓形籌碼（+$100 / +$500），再撳派牌開局！");
+    return;
+  }
+  if (currentUser.coins < bjBet) { checkBankrupt(); return; }
+
+  sfxCard();
+  lastBjBet = bjBet;
+  document.getElementById("bj-last-bet-label").innerText = lastBjBet;
+  currentUser.coins -= bjBet;
+  saveUserData();
+
+  if (bjDeck.length < 30) buildDeck();
+  playerHand = [bjDeck.pop(), bjDeck.pop()];
+  dealerHand = [bjDeck.pop(), bjDeck.pop()];
+  bjInPlay = true;
+
+  document.getElementById("bj-bet-controls").style.display = "none";
+  document.getElementById("bj-play-controls").style.display = "flex";
+  document.getElementById("btn-bj-double").disabled = (currentUser.coins < bjBet);
+
+  renderBjTable(true);
+  setBjCheer("deal");
+
+  const pScore = calcHandScore(playerHand);
+  if (pScore === 21) {
+    setTimeout(() => finishBjRound(true), 500);
+  } else {
+    document.getElementById("bj-banner").innerText = `本局注碼：$${bjBet.toLocaleString()} — 請選擇「要牌」或「停牌」`;
+  }
+}
+
+function bjHit() {
+  if (!bjInPlay) return;
+  sfxCard();
+  playerHand.push(bjDeck.pop());
+  document.getElementById("btn-bj-double").disabled = true;
+  renderBjTable(true);
+
+  const pScore = calcHandScore(playerHand);
+  if (pScore > 21) finishBjRound(false);
+  else if (pScore === 21) bjStand();
+}
+
+function bjDouble() {
+  if (!bjInPlay || currentUser.coins < bjBet) return;
+  sfxCard();
+  currentUser.coins -= bjBet;
+  bjBet *= 2;
+  saveUserData();
+
+  playerHand.push(bjDeck.pop());
+  renderBjTable(true);
+
+  const pScore = calcHandScore(playerHand);
+  if (pScore > 21) finishBjRound(false);
+  else bjStand();
+}
+
+function bjStand() {
+  if (!bjInPlay) return;
+  sfxClick();
+  renderBjTable(false);
+
+  const dealerLoop = setInterval(() => {
+    const dScore = calcHandScore(dealerHand);
+    if (dScore < 17) {
+      sfxCard();
+      dealerHand.push(bjDeck.pop());
+      renderBjTable(false);
+    } else {
+      clearInterval(dealerLoop);
+      finishBjRound(false);
+    }
+  }, 550);
+}
+
+function finishBjRound(isNaturalBlackjack) {
+  bjInPlay = false;
+  renderBjTable(false);
+
+  const pScore = calcHandScore(playerHand);
+  const dScore = calcHandScore(dealerHand);
+  const banner = document.getElementById("bj-banner");
+
+  if (pScore > 21) {
+    sfxLose(); setBjCheer("lose");
+    banner.innerText = `💥 爆煲 (${pScore}點)！莊家贏，輸咗 $${bjBet.toLocaleString()}`;
+    checkBankrupt();
+  } else if (isNaturalBlackjack && dScore !== 21) {
+    const winAmt = Math.round(bjBet * 2.5);
+    currentUser.coins += winAmt; saveUserData();
+    sfxWinBig(); setBjCheer("bigwin");
+    banner.innerText = `🎉 恭喜天生 21 點 (Blackjack)！1賠1.5 大贏 $${winAmt.toLocaleString()}！`;
+  } else if (dScore > 21) {
+    const winAmt = bjBet * 2;
+    currentUser.coins += winAmt; saveUserData();
+    sfxWinSmall(); setBjCheer("win");
+    banner.innerText = `🎉 莊家爆煲 (${dScore}點)！你贏得 $${winAmt.toLocaleString()}！`;
+  } else if (pScore > dScore) {
+    const winAmt = bjBet * 2;
+    currentUser.coins += winAmt; saveUserData();
+    sfxWinSmall(); setBjCheer("win");
+    banner.innerText = `🎉 你 ${pScore} 點贏莊家 ${dScore} 點！贏得 $${winAmt.toLocaleString()}！`;
+  } else if (pScore < dScore) {
+    sfxLose(); setBjCheer("lose");
+    banner.innerText = `😢 莊家 ${dScore} 點大過你 (${pScore}點)，輸咗 $${bjBet.toLocaleString()}`;
+    checkBankrupt();
+  } else {
+    currentUser.coins += bjBet; saveUserData();
+    sfxClick(); setBjCheer("push");
+    banner.innerText = `🤝 和局 (${pScore}點平手)！退還本金 $${bjBet.toLocaleString()}`;
+  }
+
+  bjBet = 0;
+  document.getElementById("bj-play-controls").style.display = "none";
+  document.getElementById("bj-bet-controls").style.display = "flex";
+}
+
+/**************************************************************
+ * 6. 遊戲三：發財買大細 (澳門電子骰寶 Sic Bo)
+ **************************************************************/
+const DICE_FACES = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+const SB_TOTAL_PAYS = { 7: 12, 8: 8, 9: 6, 10: 6, 11: 6, 12: 6, 13: 8 };
+let sbBets = {};
+let lastSbBets = {};
+let sbRolling = false;
+let sbHistory = [];
+
+function initSicBoUI() {
+  const trRow = document.getElementById("sb-row-triples");
+  trRow.innerHTML = "";
+  for (let d = 1; d <= 6; d++) {
+    const f = DICE_FACES[d];
+    trRow.innerHTML += `
+      <div class="sb-cell" data-sb="triple_${d}" onclick="placeSbBet('triple_${d}')">
+        <div class="sb-title" style="font-size:24px;">${f}${f}${f} 圍${d}</div>
+        <div class="sb-sub">1 賠 150</div>
+      </div>`;
+  }
+
+  const totRow = document.getElementById("sb-row-totals");
+  totRow.innerHTML = "";
+  [7,8,9,10,11,12,13].forEach(sum => {
+    totRow.innerHTML += `
+      <div class="sb-cell" data-sb="sum_${sum}" onclick="placeSbBet('sum_${sum}')">
+        <div class="sb-title" style="font-size:25px;">${sum} 點</div>
+        <div class="sb-sub">1 賠 ${SB_TOTAL_PAYS[sum]}</div>
+      </div>`;
+  });
+
+  const sinRow = document.getElementById("sb-row-singles");
+  sinRow.innerHTML = "";
+  for (let d = 1; d <= 6; d++) {
+    sinRow.innerHTML += `
+      <div class="sb-cell" data-sb="single_${d}" onclick="placeSbBet('single_${d}')">
+        <div class="sb-title" style="font-size:26px;">${DICE_FACES[d]} 買 ${d} 號</div>
+        <div class="sb-sub">中1粒1倍・2粒2倍・3粒3倍</div>
+      </div>`;
+  }
+
+  sbBets = {};
+  renderSbBetTags();
+}
+
+function getSbTotalBet() {
+  return Object.values(sbBets).reduce((a, b) => a + b, 0);
+}
+
+function placeSbBet(key) {
+  if (sbRolling) return;
+  const currentTotal = getSbTotalBet();
+  if (currentUser.coins < currentTotal + currentTableChip) {
+    showModal("籌碼不足", "你戶口入面嘅籌碼唔夠再加注喇！");
+    return;
+  }
+  sfxClick();
+  sbBets[key] = (sbBets[key] || 0) + currentTableChip;
+  document.querySelectorAll("#sicbo-board .sb-cell").forEach(el => el.classList.remove("win-glow"));
+  renderSbBetTags();
+}
+
+function renderSbBetTags() {
+  document.querySelectorAll("#sicbo-board .sb-cell").forEach(cell => {
+    const oldTag = cell.querySelector(".sb-bet-tag");
+    if (oldTag) oldTag.remove();
+    const key = cell.getAttribute("data-sb");
+    if (sbBets[key]) {
+      const tag = document.createElement("div");
+      tag.className = "sb-bet-tag";
+      tag.innerText = `$${sbBets[key]}`;
+      cell.appendChild(tag);
+    }
+  });
+  document.getElementById("sb-total-bet").innerText = getSbTotalBet().toLocaleString();
+}
+
+function clearSbBets() {
+  if (sbRolling) return;
+  sfxClick();
+  sbBets = {};
+  document.querySelectorAll("#sicbo-board .sb-cell").forEach(el => el.classList.remove("win-glow"));
+  renderSbBetTags();
+}
+
+function rebetSb() {
+  if (sbRolling) return;
+  const lastTotal = Object.values(lastSbBets).reduce((a, b) => a + b, 0);
+  if (lastTotal <= 0) {
+    showModal("未有上局記錄", "請先篤格仔落注玩一局先！");
+    return;
+  }
+  if (currentUser.coins < lastTotal) {
+    showModal("籌碼不足", `你唔夠 $${lastTotal} 重複上局注碼！`);
+    return;
+  }
+  sfxClick();
+  sbBets = { ...lastSbBets };
+  renderSbBetTags();
+}
+
+function rollSicBo() {
+  if (sbRolling) return;
+  const totalBet = getSbTotalBet();
+  if (totalBet <= 0) {
+    showModal("請先落注", "請先篤「大 / 細 / 單 / 雙 / 圍骰」格仔落注，再撳搖骰開盅！");
+    return;
+  }
+  if (currentUser.coins < totalBet) { checkBankrupt(); return; }
+
+  sbRolling = true;
+  lastSbBets = { ...sbBets };
+  currentUser.coins -= totalBet;
+  saveUserData();
+
+  document.getElementById("btn-sb-roll").disabled = true;
+  document.querySelectorAll("#sicbo-board .sb-cell").forEach(el => el.classList.remove("win-glow"));
+  document.getElementById("sb-status").innerText = "🎲 金龍骰盅搖動中... 十二生肖瑞獸加持！";
+
+  const diceEls = [0,1,2].map(i => document.getElementById(`sb-die-${i}`));
+  diceEls.forEach(el => el.classList.add("shaking"));
+
+  const animTimer = setInterval(() => {
+    sfxReelTick();
+    diceEls.forEach(el => {
+      const r = Math.floor(Math.random() * 6) + 1;
+      el.innerText = DICE_FACES[r];
+    });
+  }, 90);
+
+  setTimeout(() => {
+    clearInterval(animTimer);
+    diceEls.forEach(el => el.classList.remove("shaking"));
+
+    const d1 = Math.floor(Math.random() * 6) + 1;
+    const d2 = Math.floor(Math.random() * 6) + 1;
+    const d3 = Math.floor(Math.random() * 6) + 1;
+    const dice = [d1, d2, d3];
+    const sum = d1 + d2 + d3;
+    const isTriple = (d1 === d2 && d2 === d3);
+
+    dice.forEach((v, idx) => {
+      diceEls[idx].innerText = DICE_FACES[v];
+      diceEls[idx].className = "dice-cube" + ((v === 1 || v === 4) ? " red-pip" : "");
+    });
+
+    evaluateSicBo(dice, sum, isTriple, totalBet);
+  }, 1100);
+}
+
+function evaluateSicBo(dice, sum, isTriple, totalBet) {
+  let winningKeys = new Set();
+  let totalReturn = 0;
+
+  if (isTriple) {
+    winningKeys.add("any_triple");
+    winningKeys.add(`triple_${dice[0]}`);
+  } else {
+    if (sum >= 4 && sum <= 10) winningKeys.add("small");
+    if (sum >= 11 && sum <= 17) winningKeys.add("big");
+    if (sum % 2 === 1) winningKeys.add("odd");
+    else winningKeys.add("even");
+  }
+
+  if (SB_TOTAL_PAYS[sum]) winningKeys.add(`sum_${sum}`);
+
+  for (let d = 1; d <= 6; d++) {
+    const cnt = dice.filter(x => x === d).length;
+    if (cnt > 0) winningKeys.add(`single_${d}`);
+  }
+
+  for (const [key, betAmt] of Object.entries(sbBets)) {
+    if (!winningKeys.has(key)) continue;
+    if (key === "small" || key === "big" || key === "odd" || key === "even") {
+      totalReturn += betAmt * 2;
+    } else if (key === "any_triple") {
+      totalReturn += betAmt * 31;
+    } else if (key.startsWith("triple_")) {
+      totalReturn += betAmt * 151;
+    } else if (key.startsWith("sum_")) {
+      const s = parseInt(key.split("_")[1], 10);
+      totalReturn += betAmt * (SB_TOTAL_PAYS[s] + 1);
+    } else if (key.startsWith("single_")) {
+      const d = parseInt(key.split("_")[1], 10);
+      const cnt = dice.filter(x => x === d).length;
+      totalReturn += betAmt * (cnt + 1);
+    }
+  }
+
+  winningKeys.forEach(k => {
+    const el = document.querySelector(`#sicbo-board .sb-cell[data-sb="${k}"]`);
+    if (el) el.classList.add("win-glow");
+  });
+
+  const typeLabel = isTriple ? `圍骰 (${dice[0]}${dice[1]}${dice[2]})` : `${sum}點 (${sum>=11?'大':'細'}・${sum%2===1?'單':'雙'})`;
+  sbHistory.unshift(typeLabel);
+  if (sbHistory.length > 4) sbHistory.pop();
+  document.getElementById("sb-history").innerText = `最近：${sbHistory.join(" ｜ ")}`;
+
+  const statusEl = document.getElementById("sb-status");
+  const star = STAR_GUARDIANS[Math.floor(Math.random() * STAR_GUARDIANS.length)];
+
+  if (totalReturn > 0) {
+    currentUser.coins += totalReturn;
+    saveUserData();
+    if (totalReturn >= totalBet * 3) sfxWinBig();
+    else sfxWinSmall();
+    statusEl.innerText = `🎉 開出 ${dice.join("-")} 共 ${typeLabel}！${star.name}賀你贏得 $${totalReturn.toLocaleString()}！`;
+  } else {
+    sfxLose();
+    statusEl.innerText = `開出 ${dice.join("-")} 共 ${typeLabel} — ${star.name}話：下一鋪買中圍骰贏返晒！`;
+    checkBankrupt();
+  }
+
+  sbBets = {};
+  renderSbBetTags();
+  sbRolling = false;
+  document.getElementById("btn-sb-roll").disabled = false;
+}
+
+/**************************************************************
+ * 7. 遊戲四：五張話事啤 (與生肖星座高手對決 Stud Poker)
+ **************************************************************/
+const STUD_RANKS = ["7", "8", "9", "10", "J", "Q", "K", "A"];
+const STUD_RANK_VAL = { "7":7, "8":8, "9":9, "10":10, "J":11, "Q":12, "K":13, "A":14 };
+const STUD_SUIT_VAL = { "♠":4, "♥":3, "♣":2, "♦":1 };
+
+let studDeck = [];
+let studOpponents = [STAR_GUARDIANS[0], STAR_GUARDIANS[1]];
+let studPlayers = [];
+let studPot = 0;
+let studStreet = 0;
+let studInPlay = false;
+
+function initStudUI() {
+  studInPlay = false;
+  updateStudOpponentHeaders();
+  document.getElementById("stud-ai1-cards").innerHTML = "";
+  document.getElementById("stud-ai2-cards").innerHTML = "";
+  document.getElementById("stud-hero-cards").innerHTML = "";
+  document.getElementById("stud-pot-val").innerText = "0";
+  document.getElementById("stud-status-msg").innerText = "撳「派牌開局」與星宿高手切磋！（底注 $200）";
+  document.getElementById("stud-start-controls").style.display = "flex";
+  document.getElementById("stud-action-controls").style.display = "none";
+  document.querySelectorAll(".stud-seat").forEach(s => s.classList.remove("folded", "winner-seat"));
+}
+
+function updateStudOpponentHeaders() {
+  document.getElementById("stud-ai1-name").innerText = `${studOpponents[0].icon} ${studOpponents[0].name}`;
+  document.getElementById("stud-ai2-name").innerText = `${studOpponents[1].icon} ${studOpponents[1].name}`;
+  document.getElementById("stud-hero-name").innerText = `👑 ${currentUser ? currentUser.name : '你'}嘅手牌`;
+}
+
+function changeStudOpponents() {
+  if (studInPlay) return;
+  sfxClick();
+  const shuffled = [...STAR_GUARDIANS].sort(() => Math.random() - 0.5);
+  studOpponents = [shuffled[0], shuffled[1]];
+  updateStudOpponentHeaders();
+  document.getElementById("stud-ai1-speech").innerText = `「本座乃${studOpponents[0].name}，請賜教！」`;
+  document.getElementById("stud-ai2-speech").innerText = `「${studOpponents[1].name}在此，一於奉陪到底！」`;
+}
+
+function buildStudDeck() {
+  studDeck = [];
+  for (const s of SUITS) {
+    for (const r of STUD_RANKS) {
+      studDeck.push({ suit: s, rank: r, rVal: STUD_RANK_VAL[r], sVal: STUD_SUIT_VAL[s] });
+    }
+  }
+  studDeck.sort(() => Math.random() - 0.5);
+}
+
+function evaluateStudHand(cards) {
+  const n = cards.length;
+  const counts = {};
+  cards.forEach(c => counts[c.rVal] = (counts[c.rVal] || 0) + 1);
+  const groups = Object.entries(counts)
+    .map(([v, cnt]) => ({ val: parseInt(v,10), cnt }))
+    .sort((a, b) => b.cnt - a.cnt || b.val - a.val);
+
+  let isFlush = (n === 5) && cards.every(c => c.suit === cards[0].suit);
+  let isStraight = false;
+  const sortedVals = [...cards].map(c => c.rVal).sort((a,b) => b - a);
+  if (n === 5 && groups.length === 5 && (sortedVals[0] - sortedVals[4] === 4)) {
+    isStraight = true;
+  }
+
+  let cat = 1, name = "散牌 (高牌)";
+  if (isFlush && isStraight) { cat = 9; name = "🌟 同花順"; }
+  else if (groups[0].cnt === 4) { cat = 8; name = "💣 四條 (鐵支)"; }
+  else if (groups[0].cnt === 3 && groups[1] && groups[1].cnt === 2) { cat = 7; name = "🏠 夫佬 (滿堂紅)"; }
+  else if (isFlush) { cat = 6; name = "🌺 同花"; }
+  else if (isStraight) { cat = 5; name = "🐉 順子"; }
+  else if (groups[0].cnt === 3) { cat = 4; name = "🔥 三條"; }
+  else if (groups[0].cnt === 2 && groups[1] && groups[1].cnt === 2) { cat = 3; name = "✌️ 兩對"; }
+  else if (groups[0].cnt === 2) { cat = 2; name = `一對 ${Object.keys(STUD_RANK_VAL).find(k=>STUD_RANK_VAL[k]===groups[0].val)}`; }
+  else {
+    const topCard = [...cards].sort((a,b) => b.rVal - a.rVal || b.sVal - a.sVal)[0];
+    name = `${topCard.rank} 話事`;
+  }
+
+  let score = cat * 1e10;
+  groups.forEach((g, idx) => { score += g.val * Math.pow(15, 4 - idx); });
+  const maxSuit = [...cards].sort((a,b) => b.rVal - a.rVal || b.sVal - a.sVal)[0].sVal;
+  score += maxSuit;
+
+  return { score, name, cat };
+}
+
+function renderStudTable(revealAll = false) {
+  const hero = studPlayers[0];
+  const ai1 = studPlayers[1];
+  const ai2 = studPlayers[2];
+
+  document.getElementById("stud-hero-cards").innerHTML = hero.cards.map(c => renderCardHTML(c, false)).join("");
+  document.getElementById("stud-ai1-cards").innerHTML = ai1.cards.map((c, i) => renderCardHTML(c, !revealAll && i === 0)).join("");
+  document.getElementById("stud-ai2-cards").innerHTML = ai2.cards.map((c, i) => renderCardHTML(c, !revealAll && i === 0)).join("");
+
+  document.getElementById("stud-seat-ai1").classList.toggle("folded", ai1.folded);
+  document.getElementById("stud-seat-ai2").classList.toggle("folded", ai2.folded);
+  document.getElementById("stud-pot-val").innerText = studPot.toLocaleString();
+
+  if (hero.cards.length > 0) {
+    const evalH = evaluateStudHand(hero.cards);
+    document.getElementById("stud-hero-rank-label").innerText = `目前牌型：${evalH.name}`;
+  }
+}
+
+function startStudRound() {
+  const ante = 200;
+  if (currentUser.coins < ante) {
+    if (!checkBankrupt()) showModal("籌碼不足", "你唔夠 $200 底注開局！");
+    return;
+  }
+  sfxCard();
+  buildStudDeck();
+  currentUser.coins -= ante;
+  saveUserData();
+
+  studPot = ante * 3;
+  studStreet = 2;
+  studInPlay = true;
+
+  studPlayers = [
+    { id: "hero", name: currentUser.name, cards: [studDeck.pop(), studDeck.pop()], folded: false },
+    { id: "ai1",  name: studOpponents[0].name, cards: [studDeck.pop(), studDeck.pop()], folded: false },
+    { id: "ai2",  name: studOpponents[1].name, cards: [studDeck.pop(), studDeck.pop()], folded: false }
+  ];
+
+  document.querySelectorAll(".stud-seat").forEach(s => s.classList.remove("folded", "winner-seat"));
+  document.getElementById("stud-ai1-speech").innerText = "已落底注 $200";
+  document.getElementById("stud-ai2-speech").innerText = "已落底注 $200";
+
+  document.getElementById("stud-start-controls").style.display = "none";
+  document.getElementById("stud-action-controls").style.display = "flex";
+  document.getElementById("stud-status-msg").innerText = "第 2 張牌已派！請選擇過牌、加注或梭哈！";
+
+  renderStudTable(false);
+}
+
+function studPlayerAct(action) {
+  if (!studInPlay) return;
+  sfxClick();
+
+  if (action === "fold") {
+    studInPlay = false;
+    sfxLose();
+    const activeAIs = studPlayers.slice(1).filter(p => !p.folded);
+    const winnerAI = activeAIs[0] || studPlayers[1];
+    document.getElementById("stud-status-msg").innerText = `你選擇棄牌！【${winnerAI.name}】贏得彩池 $${studPot.toLocaleString()}！`;
+    document.getElementById("stud-action-controls").style.display = "none";
+    document.getElementById("stud-start-controls").style.display = "flex";
+    renderStudTable(true);
+    checkBankrupt();
+    return;
+  }
+
+  let betAmt = 200;
+  if (action === "raise500") betAmt = 500;
+  else if (action === "raise1000") betAmt = 1000;
+  else if (action === "showhand") betAmt = Math.min(currentUser.coins, 2000);
+
+  if (currentUser.coins < betAmt) {
+    betAmt = currentUser.coins;
+  }
+
+  currentUser.coins -= betAmt;
+  studPot += betAmt;
+  saveUserData();
+
+  [1, 2].forEach(idx => {
+    const ai = studPlayers[idx];
+    const speechEl = document.getElementById(`stud-ai${idx}-speech`);
+    if (ai.folded) return;
+
+    const evalAI = evaluateStudHand(ai.cards);
+    const activeCount = studPlayers.filter(p => !p.folded).length;
+    if (betAmt >= 1000 && evalAI.cat === 1 && studStreet >= 4 && activeCount > 2 && Math.random() < 0.45) {
+      ai.folded = true;
+      speechEl.innerText = `「牌風不順，暫避鋒芒棄牌！」`;
+    } else {
+      studPot += betAmt;
+      speechEl.innerText = betAmt >= 1000 ? `「跟足 $${betAmt}！奉陪到底！」` : `「跟注 +$${betAmt}！」`;
+    }
+  });
+
+  if (action === "showhand") {
+    while (studStreet < 5) {
+      studStreet++;
+      studPlayers.forEach(p => { if (!p.folded) p.cards.push(studDeck.pop()); });
+    }
+    finishStudShowdown();
+    return;
+  }
+
+  if (studStreet < 5) {
+    studStreet++;
+    sfxCard();
+    studPlayers.forEach(p => { if (!p.folded) p.cards.push(studDeck.pop()); });
+    renderStudTable(false);
+    document.getElementById("stud-status-msg").innerText = `第 ${studStreet} 張牌已派！請選擇動作：`;
+  } else {
+    finishStudShowdown();
+  }
+}
+
+function finishStudShowdown() {
+  studInPlay = false;
+  renderStudTable(true);
+
+  let bestPlayer = null;
+  let bestEval = null;
+
+  studPlayers.forEach(p => {
+    if (p.folded) return;
+    const ev = evaluateStudHand(p.cards);
+    p.eval = ev;
+    if (!bestEval || ev.score > bestEval.score) {
+      bestEval = ev;
+      bestPlayer = p;
+    }
+  });
+
+  studPlayers.slice(1).forEach((ai, idx) => {
+    const sp = document.getElementById(`stud-ai${idx+1}-speech`);
+    if (!ai.folded && ai.eval) sp.innerText = `開牌：${ai.eval.name}`;
+  });
+
+  if (bestPlayer.id === "hero") {
+    currentUser.coins += studPot;
+    saveUserData();
+    sfxWinBig();
+    document.getElementById("stud-seat-hero").classList.add("winner-seat");
+    document.getElementById("stud-status-msg").innerText = `🎉 恭喜你以【${bestEval.name}】力壓群雄，獨得彩池 $${studPot.toLocaleString()}！`;
+  } else {
+    sfxLose();
+    const seatId = bestPlayer.id === "ai1" ? "stud-seat-ai1" : "stud-seat-ai2";
+    document.getElementById(seatId).classList.add("winner-seat");
+    document.getElementById("stud-status-msg").innerText = `😄 【${bestPlayer.name}】以【${bestEval.name}】贏得彩池 $${studPot.toLocaleString()}！再戰一局！`;
+    checkBankrupt();
+  }
+
+  document.getElementById("stud-action-controls").style.display = "none";
+  document.getElementById("stud-start-controls").style.display = "flex";
+}
+
+/**************************************************************
+ * 8. 遊戲五：星象電子輪盤 (Electronic Roulette)
+ **************************************************************/
+const RL_REDS = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+let rlBets = {};
+let lastRlBets = {};
+let rlSpinning = false;
+let rlHistory = [];
+
+function initRouletteUI() {
+  const grid = document.getElementById("rl-numbers-grid");
+  grid.innerHTML = `<div class="rl-zero-cell" data-rl="num_0" onclick="placeRlBet('num_0')">0</div>`;
+
+  const rows = [3, 2, 1];
+  rows.forEach((rStart, rIdx) => {
+    for (let c = 0; c < 12; c++) {
+      const n = rStart + c * 3;
+      const isRed = RL_REDS.has(n);
+      const cell = document.createElement("div");
+      cell.className = `rl-num-cell ${isRed ? 'rl-red' : 'rl-black'}`;
+      cell.style.gridRow = rIdx + 1;
+      cell.style.gridColumn = c + 2;
+      cell.setAttribute("data-rl", `num_${n}`);
+      cell.onclick = () => placeRlBet(`num_${n}`);
+      cell.innerText = n;
+      grid.appendChild(cell);
+    }
+  });
+
+  rlBets = {};
+  renderRlBetTags();
+}
+
+function getRlTotalBet() {
+  return Object.values(rlBets).reduce((a, b) => a + b, 0);
+}
+
+function placeRlBet(key) {
+  if (rlSpinning) return;
+  const total = getRlTotalBet();
+  if (currentUser.coins < total + currentTableChip) {
+    showModal("籌碼不足", "你戶口入面嘅籌碼唔夠再加注喇！");
+    return;
+  }
+  sfxClick();
+  rlBets[key] = (rlBets[key] || 0) + currentTableChip;
+  document.querySelectorAll(".rl-board [data-rl]").forEach(el => el.classList.remove("win-glow"));
+  renderRlBetTags();
+}
+
+function betZodiacLuckyNums() {
+  if (rlSpinning) return;
+  const top5 = STAR_GUARDIANS.slice(0, 5);
+  const cost = currentTableChip * 5;
+  if (currentUser.coins < getRlTotalBet() + cost) {
+    showModal("籌碼不足", `一鍵買齊五大星宿吉數需要 $${cost.toLocaleString()}，你而家籌碼唔夠，請揀細啲面額嘅籌碼！`);
+    return;
+  }
+  sfxWinSmall();
+  top5.forEach(k => {
+    const key = `num_${k.luckyNum}`;
+    rlBets[key] = (rlBets[key] || 0) + currentTableChip;
+  });
+  renderRlBetTags();
+  document.getElementById("rl-status-title").innerText = "🌟 已落注五大星宿吉數：8(金龍)、16(猛虎)、18(駿馬)、23(獅子)、32(射手)！";
+}
+
+function renderRlBetTags() {
+  document.querySelectorAll(".rl-board [data-rl]").forEach(cell => {
+    const oldTag = cell.querySelector(".sb-bet-tag");
+    if (oldTag) oldTag.remove();
+    const key = cell.getAttribute("data-rl");
+    if (rlBets[key]) {
+      const tag = document.createElement("div");
+      tag.className = "sb-bet-tag";
+      tag.innerText = `$${rlBets[key]}`;
+      cell.appendChild(tag);
+    }
+  });
+  document.getElementById("rl-total-bet").innerText = getRlTotalBet().toLocaleString();
+}
+
+function clearRlBets() {
+  if (rlSpinning) return;
+  sfxClick();
+  rlBets = {};
+  document.querySelectorAll(".rl-board [data-rl]").forEach(el => el.classList.remove("win-glow"));
+  renderRlBetTags();
+}
+
+function rebetRl() {
+  if (rlSpinning) return;
+  const lastTotal = Object.values(lastRlBets).reduce((a, b) => a + b, 0);
+  if (lastTotal <= 0) {
+    showModal("未有上局記錄", "請先篤號碼或紅黑落注玩一局先！");
+    return;
+  }
+  if (currentUser.coins < lastTotal) {
+    showModal("籌碼不足", `你唔夠 $${lastTotal} 重複上局注碼！`);
+    return;
+  }
+  sfxClick();
+  rlBets = { ...lastRlBets };
+  renderRlBetTags();
+}
+
+function spinRoulette() {
+  if (rlSpinning) return;
+  const totalBet = getRlTotalBet();
+  if (totalBet <= 0) {
+    showModal("請先落注", "請先篤號碼格仔或「紅 / 黑 / 單 / 雙」，再撳轉動輪盤！");
+    return;
+  }
+  if (currentUser.coins < totalBet) { checkBankrupt(); return; }
+
+  rlSpinning = true;
+  lastRlBets = { ...rlBets };
+  currentUser.coins -= totalBet;
+  saveUserData();
+
+  document.getElementById("btn-rl-spin").disabled = true;
+  document.querySelectorAll(".rl-board [data-rl]").forEach(el => el.classList.remove("win-glow"));
+  const wheelEl = document.getElementById("rl-wheel");
+  const numBall = document.getElementById("rl-result-num");
+  wheelEl.classList.add("spinning-wheel");
+  document.getElementById("rl-status-title").innerText = "🎡 星象輪盤飛轉中... 幸運珠跳動中！";
+
+  const animTimer = setInterval(() => {
+    sfxReelTick();
+    numBall.innerText = Math.floor(Math.random() * 37);
+  }, 85);
+
+  setTimeout(() => {
+    clearInterval(animTimer);
+    wheelEl.classList.remove("spinning-wheel");
+
+    const winNum = Math.floor(Math.random() * 37);
+    const isRed = RL_REDS.has(winNum);
+    numBall.innerText = winNum;
+    numBall.style.background = winNum === 0 ? "#00882b" : (isRed ? "#c61a1a" : "#111");
+
+    evaluateRoulette(winNum, totalBet);
+  }, 1300);
+}
+
+function evaluateRoulette(winNum, totalBet) {
+  let winningKeys = new Set([`num_${winNum}`]);
+  if (winNum > 0) {
+    if (RL_REDS.has(winNum)) winningKeys.add("red");
+    else winningKeys.add("black");
+
+    if (winNum % 2 === 1) winningKeys.add("odd");
+    else winningKeys.add("even");
+
+    if (winNum <= 18) winningKeys.add("low");
+    else winningKeys.add("high");
+
+    if (winNum <= 12) winningKeys.add("doz1");
+    else if (winNum <= 24) winningKeys.add("doz2");
+    else winningKeys.add("doz3");
+  }
+
+  let totalReturn = 0;
+  for (const [key, betAmt] of Object.entries(rlBets)) {
+    if (!winningKeys.has(key)) continue;
+    if (key.startsWith("num_")) {
+      totalReturn += betAmt * 36;
+    } else if (key.startsWith("doz")) {
+      totalReturn += betAmt * 3;
+    } else {
+      totalReturn += betAmt * 2;
+    }
+  }
+
+  winningKeys.forEach(k => {
+    const el = document.querySelector(`.rl-board [data-rl="${k}"]`);
+    if (el) el.classList.add("win-glow");
+  });
+
+  const colorText = winNum === 0 ? "🟢 0號(綠)" : (RL_REDS.has(winNum) ? `🔴 ${winNum}(紅)` : `⚫ ${winNum}(黑)`);
+  rlHistory.unshift(colorText);
+  if (rlHistory.length > 5) rlHistory.pop();
+  document.getElementById("rl-history-text").innerText = `最近開出：${rlHistory.join(" ｜ ")}`;
+
+  const matchedStar = STAR_GUARDIANS.find(k => k.luckyNum === winNum);
+  const star = matchedStar || STAR_GUARDIANS[Math.floor(Math.random() * STAR_GUARDIANS.length)];
+  const titleEl = document.getElementById("rl-status-title");
+
+  if (totalReturn > 0) {
+    currentUser.coins += totalReturn;
+    saveUserData();
+    if (totalReturn >= totalBet * 5) sfxWinBig();
+    else sfxWinSmall();
+    const starNote = matchedStar ? `（正中【${matchedStar.name}】吉數！）` : "";
+    titleEl.innerText = `🎉 開出 ${colorText}${starNote}！贏得 $${totalReturn.toLocaleString()}！`;
+  } else {
+    sfxLose();
+    titleEl.innerText = `開出 ${colorText} — ${star.name}話：下次試下買五大星宿吉數吖！`;
+    checkBankrupt();
+  }
+
+  rlBets = {};
+  renderRlBetTags();
+  rlSpinning = false;
+  document.getElementById("btn-rl-spin").disabled = false;
+}
+
+window.onload = () => {
+  buildDeck();
+  loadAllData();
+};
+</script>
+</body>
+</html>
